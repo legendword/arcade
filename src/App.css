@@ -1,0 +1,102 @@
+body {
+  overflow: hidden;
+}
+
+.arcade-play-content {
+  padding-top: max(5vh, 30px);
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+.arcade-dashboard-title-small {
+  font-size: 60%;
+}
+
+.arcade-home-content {
+  display: flex;
+  padding-top: 20px;
+}
+
+.arcade-home-content .arcade-home-sidebar {
+  flex: 1;
+}
+
+.arcade-home-content .arcade-home-dashboard {
+  flex: 4;
+}
+
+.arcade-sidebar-nav {
+  border-right: 1px solid #dee2e6;
+  margin-left: 10px;
+  width: 20vw;
+  font-weight: 500;
+  height: calc( 100vh - 80px );
+}
+
+.arcade-sidebar-nav .nav-item {
+  margin-right: -1px;
+}
+
+.arcade-sidebar-nav .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: .25rem;
+  border-bottom-left-radius: .25rem;
+}
+
+.arcade-sidebar-nav .nav-link.active {
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #fff #dee2e6 #dee2e6;
+}
+
+.arcade-btn-blue {
+  color: #fff;
+  background-color: #57ccf8;
+  border-color: #57ccf8;
+}
+.arcade-btn-blue:hover {
+  color: #fff;
+  background-color: #57c4f8;
+  border-color: #57c4f8;
+}
+
+
+.signinLabel {
+  letter-spacing: 5px;
+  font-weight: 300;
+  color: grey;
+  font-size: 1.1rem;
+  margin-bottom: max(3vh, 10px);
+}
+.signinBtn {
+  width: max(50%, 30px);
+  margin: auto;
+  display: block;
+}
+.signinBtnFull {
+  width: 90%;
+  margin: auto;
+  display: block;
+}
+.signinColRight {
+  border-left: 1px solid #d5d5d5;
+}
+@media screen and (max-width: 768px) {
+  .signinColRight {
+    border-left: none;
+  }
+}
+.signinBox {
+  width: 800px;
+  margin: auto;
+}
+@media screen and (max-width: 600px) {
+  .signinBox {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 600px) and (max-width: 1000px) {
+  .signinBox {
+    width: 500px;
+  }
+}
