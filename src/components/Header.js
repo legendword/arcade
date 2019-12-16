@@ -2,6 +2,14 @@ import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
 
 export class Header extends Component {
+    goHome = (e) => {
+        if (this.props.inGame) {
+            if (!window.confirm("You're now leaving an ongoing game. Your progress won't be saved.")) {
+                e.preventDefault()
+            }
+        }
+    }
+
     render() {
         return (
             <div className="container-fluid" style={{paddingTop:"60px"}}>
@@ -13,7 +21,7 @@ export class Header extends Component {
                     <div className="collapse navbar-collapse justify-content-between" id="navbarContent">
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/home" activeClassName="nav-link active">Home</NavLink>
+                                <NavLink className="nav-link" to="/home" activeClassName="nav-link active" onClick={this.goHome}>Home</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/play" activeClassName="nav-link active">Play</NavLink>

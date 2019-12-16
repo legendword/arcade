@@ -2,6 +2,23 @@ body {
   overflow: hidden;
 }
 
+.arcade-list-card:hover {
+  transform: scale(1.05);
+  transition: transform 0.5s;
+}
+
+.arcade-list-card {
+  max-width: 300px;
+  margin: auto;
+  transition: transform 0.5s;
+  cursor: pointer;
+}
+
+.arcade-play-list {
+  margin-top: max(3vh, 20px);
+  overflow: visible;
+}
+
 .arcade-play-content {
   padding-top: max(5vh, 30px);
   padding-left: 5vw;

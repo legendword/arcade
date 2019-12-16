@@ -13,21 +13,38 @@ export class App extends React.Component {
       level: 1,
       levelexp: 40,
       levelupexp: 100
-    }
+    },
+    inGame: false,
+    currentGame: null
   }
 
   signInEvent = (e) => {
     e.preventDefault()
   }
 
+  leaveGame = () => {
+    this.setState({
+      inGame: false,
+      currentGame: null
+    })
+  }
+
+  gameSelect = (w) => {
+      console.log(w)
+      this.setState({
+          inGame: true,
+          currentGame: w
+      })
+  }
+
   render() {
     return (
       <HashRouter>
         <div className="App">
-          <Header />
+          <Header inGame={this.state.inGame} leaveGame={this.leaveGame} />
           <Switch>
             <Route path="/play">
-              <PlayContent loggedIn={this.state.loggedIn} user={this.state.user} signInEvent={this.signInEvent} />
+              <PlayContent loggedIn={this.state.loggedIn} user={this.state.user} signInEvent={this.signInEvent} inGame={this.state.inGame} currentGame={this.state.currentGame} gameSelect={this.gameSelect} leaveGame={this.leaveGame} />
             </Route>
             <Route path="/home">
               <HomeContent loggedIn={this.state.loggedIn} user={this.state.user} signInEvent={this.signInEvent} />

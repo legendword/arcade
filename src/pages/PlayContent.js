@@ -3,13 +3,24 @@ import SignInForm from '../components/SignInForm'
 import PlayList from './PlayList'
 
 export class PlayContent extends Component {
+
     render() {
         if (this.props.loggedIn) {
-            return (
-                <div>
-                    <PlayList />
-                </div>
-            )
+            if (this.props.inGame) {
+                const Game = this.props.currentGame.component
+                return (
+                    <div>
+                        <Game leaveGame={this.props.leaveGame} />
+                    </div>
+                )
+            }
+            else {
+                return (
+                    <div>
+                        <PlayList gameSelect={this.props.gameSelect} />
+                    </div>
+                )
+            }
         }
         else {
             return (

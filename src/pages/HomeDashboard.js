@@ -18,12 +18,12 @@ export class HomeDashboard extends Component {
                 <Route path="/home/overview">
                     <div className="container">
                         <h2 className="arcade-dashboard-title">{this.props.user.name}</h2>
-                        <p className="arcade-dashboard-userlvl">
+                        <div className="arcade-dashboard-userlvl">
                             <span>LV. {this.props.user.level} - {this.props.user.levelexp}/{this.props.user.levelupexp}</span>
                             <div className="progress" style={{height:"2px"}}>
                                 <div className="progress-bar" style={{width:(this.props.user.levelexp/this.props.user.levelupexp)*100+"%"}}></div>
                             </div>
-                        </p>
+                        </div>
                         <div className="row" style={{marginTop: "max(4vh,20px)"}}>
                             <div className="col-md-7">
                                 <div className="arcade-dashboard-highscore">
