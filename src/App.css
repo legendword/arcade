@@ -1,7 +1,55 @@
+/* General -> Body */
 body {
   overflow: hidden;
 }
 
+
+/* Tetris */
+.arcade-tetris-scores {
+  margin-top: 3vh;
+  vertical-align: center;
+  line-height: 3.5rem;
+}
+
+.arcade-tetris-desc {
+  font-size: 1.2rem;
+}
+
+.arcade-tetris-score {
+  font-size: 2rem;
+}
+
+.arcade-tetris-outer {
+  margin-top: 5vh;
+}
+
+.arcade-tetris-game {
+  width: 100%;
+  transform-origin: top left;
+}
+
+.arcade-tetris-row {
+  margin: 0 auto;
+}
+
+.arcade-tetris-tile {
+  position: absolute;
+  border: 1px solid black;
+}
+
+/* Game -> In Game */
+.arcade-game-toosmall {
+  display: none;
+  color: red;
+}
+
+@media (max-width: 600px) {
+  .arcade-game-toosmall {
+    display: block;
+  }
+}
+
+/* Game -> Game Select */
 .arcade-list-card:hover {
   transform: scale(1.05);
   transition: transform 0.5s;
@@ -19,16 +67,19 @@ body {
   overflow: visible;
 }
 
+/* Game -> Game Outer */
 .arcade-play-content {
   padding-top: max(5vh, 30px);
   padding-left: 5vw;
   padding-right: 5vw;
 }
 
+/* Home -> Dashboard */
 .arcade-dashboard-title-small {
   font-size: 60%;
 }
 
+/* Home -> Home Outer */
 .arcade-home-content {
   display: flex;
   padding-top: 20px;
@@ -42,6 +93,7 @@ body {
   flex: 4;
 }
 
+/* Home -> Sidebar */
 .arcade-sidebar-nav {
   border-right: 1px solid #dee2e6;
   margin-left: 10px;
@@ -66,17 +118,18 @@ body {
   border-color: #dee2e6 #fff #dee2e6 #dee2e6;
 }
 
+/* General -> Sign In */
 .arcade-btn-blue {
   color: #fff;
   background-color: #57ccf8;
   border-color: #57ccf8;
 }
+
 .arcade-btn-blue:hover {
   color: #fff;
   background-color: #57c4f8;
   border-color: #57c4f8;
 }
-
 
 .signinLabel {
   letter-spacing: 5px;
