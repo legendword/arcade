@@ -211,13 +211,21 @@ export class Tetris extends Component {
         super(props)
 
         //generate initial tiles
-        var tl = []
+        let tl = []
         for (let i=0;i<20;i++){
-            var tt = []
+            let tt = []
             for (let j=0;j<10;j++){
                 tt.push(new Tile({x:i,y:j,size:30}))
             }
             tl.push(tt)
+        }
+        let ntl = []
+        for (let i=0;i<4;i++){
+            let ntt = []
+            for (let j=0;j<3;j++){
+                ntt.push(new Tile({x:i,y:j,size:30}))
+            }
+            ntl.push(ntt)
         }
         this.state = {
             tiles: tl,
@@ -225,7 +233,8 @@ export class Tetris extends Component {
             level: 1,
             currentSpeed: 800,
             speedConverted: 1.25,
-            nextBlock: this.randomBlock(),
+            nextShape: new CurrentShape({shape:this.randomBlock(),x:1,y:3,flip:0}),
+            nextTiles: ntl,
             current: new CurrentShape({shape:null,x:null,y:null,flip:null})
         }
 
@@ -252,13 +261,6 @@ export class Tetris extends Component {
     goDownTimeout = null
 
     init = () => {
-        this.setState((state) => {
-            let cs = this.speedChange[state.level-1]
-            return {
-                currentSpeed: cs,
-                speedConverted: 1000/cs
-            }
-        })
         this.newBlock()
         this.goDown()
     }
@@ -299,7 +301,7 @@ export class Tetris extends Component {
     checkLines = () => {
         let dellines = {}
         let tls = this.state.tiles
-        let hasDellines = false
+        let totalLines = 0
         for (let i=0;i<20;i++) {
             let j = 0;
             for (;j<10;j++) {
@@ -307,17 +309,21 @@ export class Tetris extends Component {
             }
             if (j>=10) {
                 dellines[i] = true
-                hasDellines = true
+                totalLines++;
                 for (let k=0;k<10;k++) {
                     tls[i][k].color = "#fff8dc"
                 }
             }
         }
-        if (hasDellines) {
+        if (totalLines>0) {
             this.setState({
                 tiles: tls
             })
+            this.addScore(Math.pow(2, totalLines - 1) * 100)
             window.setTimeout(this.clearLines.bind(this, dellines), this.settings.beforeClearline)    
+        }
+        else{
+            this.addScore(10)
         }
     }
 
@@ -424,29 +430,32 @@ export class Tetris extends Component {
             tiles: tls,
             current: cs
         })
-        /* force update
-        this.state.tiles = tls
-        this.current = cs
-        this.forceUpdate()
-        */
 
         this.goDownTimeout = window.setTimeout(this.goDown, this.speeded?50:this.state.currentSpeed)
     }
 
     newBlock = () => {
-        let bl = this.state.nextBlock
+        let ns = this.state.nextShape
         let cs = this.state.current
         let tls = this.state.tiles
-        cs.shape = bl
+        cs.shape = ns.shape
         cs.x = this.settings.startPos[0]
         cs.y = this.settings.startPos[1]
         cs.flip = 0
         cs.preX = cs.preY = null
         cs.newPre({self:this,tls})
+
+        
+        let ntls = this.state.nextTiles
+        ns.remove({self:this,tls:ntls})
+        ns.shape = this.randomBlock()
+        ns.add({self:this,tls:ntls})
+
         this.setState({
             current: cs,
             tiles: tls,
-            nextBlock: this.randomBlock()
+            nextShape: ns,
+            nextTiles: ntls
         })
     }
 
@@ -455,9 +464,29 @@ export class Tetris extends Component {
     }
 
     addScore = (s) => {
-        this.setState({
-            score: this.state.score + s
-        })
+        let ns = this.state.score + s
+        let nl = this.state.level
+        if (ns>=this.speedChangeCondition[nl]) {
+            if (nl+1<this.speedChange.length) {
+                nl++
+                this.setState({
+                    score: ns,
+                    level: nl,
+                    currentSpeed: this.speedChange[nl-1],
+                    speedConverted: (1000/this.speedChange[nl-1]).toFixed(2)
+                })
+            }
+            else {
+                this.setState({
+                    score: ns
+                })
+            }
+        }
+        else {
+            this.setState({
+                score: ns
+            })
+        }
     }
 
     hardLand = () => {
@@ -479,7 +508,7 @@ export class Tetris extends Component {
 
     componentDidMount() {
         let tm = this.mainElement.current.getBoundingClientRect().width/(30*10);
-        let dm = (window.innerHeight - 60 - window.innerHeight * 0.05)/(30*20);
+        let dm = (window.innerHeight - 60 - window.innerHeight * 0.05 - 20)/(30*20);
         this.mainElement.current.style.transform = "scale("+Math.min(tm,dm)+")";
 
         this.keyDownListener = window.addEventListener("keydown", this.keyDown)
@@ -490,8 +519,9 @@ export class Tetris extends Component {
 
     componentWillUnmount() {
         //console.log("Tetris will unmount")
-        window.removeEventListener(this.keyDownListener)
-        window.removeEventListener(this.keyUpListener)
+        this.paused = true
+        window.removeEventListener("keydown", this.keyDownListener)
+        window.removeEventListener("keyup", this.keyUpListener)
         this.props.leaveGame()
     }
 
@@ -522,8 +552,14 @@ export class Tetris extends Component {
                 this.hardLand()
                 break
             case 27:
-                this.paused = !this.paused
-                if (!this.paused) {
+                this.paused = !this.paused //separate from state.paused, since state updates may be asynchronous
+                this.setState({
+                    paused: this.paused
+                })
+                if (this.paused) {
+                    window.clearTimeout(this.goDownTimeout)
+                }
+                else {
                     this.goDown()
                 }
                 break
@@ -557,11 +593,28 @@ export class Tetris extends Component {
                 <div className="arcade-tetris-outer">
                     <div className="row">
                         <div className="col-md-4">
-                            <h5>Next Shape:</h5>
-                            <div className="arcade-tetris-nextshape">
-
+                            <div style={{padding:"0 10px"}}>
+                                <h5 className="text-center">Next Shape</h5>
+                                <div className="arcade-tetris-nextshape">
+                                    {
+                                        this.state.nextTiles.map((a,aid) => (
+                                            <div className="arcade-tetris-next-row" key={aid}>
+                                                {
+                                                    a.map((b,bid) => (
+                                                        <div className="arcade-tetris-tile" key={bid} style={{
+                                                            width: (b.size+1)+"px",
+                                                            height: (b.size+1)+"px",
+                                                            top: (b.size*b.x)+"px",
+                                                            left: (b.size*b.y)+"px",
+                                                            backgroundColor: b.color
+                                                        }}></div>
+                                                    ))
+                                                }
+                                            </div>
+                                        ))
+                                    }
+                                </div>
                             </div>
-
                         </div>
                         <div className="col-md-4">
                             <div className="arcade-tetris-game" ref={this.mainElement}>
@@ -585,7 +638,12 @@ export class Tetris extends Component {
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <h3>Tetris</h3>
+                            <h3>
+                                Tetris 
+                                <span className="arcade-tetris-paused">{
+                                    (this.state.paused ? "PAUSED" : "")
+                                }</span>
+                            </h3>
                             <div className="row arcade-tetris-scores">
                                 <div className="col-md-3 arcade-tetris-desc">
                                     Score
