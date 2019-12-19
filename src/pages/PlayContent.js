@@ -6,11 +6,11 @@ export class PlayContent extends Component {
 
     render() {
         if (this.props.loggedIn) {
-            if (this.props.inGame) {
+            if (this.props.currentGame) {
                 const Game = this.props.currentGame.component
                 return (
                     <div>
-                        <Game leaveGame={this.props.leaveGame} />
+                        <Game leaveGame={this.props.leaveGame} gameEnd={this.props.gameEnd} />
                     </div>
                 )
             }

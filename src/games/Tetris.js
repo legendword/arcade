@@ -47,7 +47,7 @@ class CurrentShape {
     removePre = (ref) => {
         let tls = ref.tls
         let self = ref.self
-        if (this.preX) {
+        if (this.preX!=null) {
             //remove old pre
             for (let i of this.shape.content[this.flip]) {
                 if (self.isInBorder(this.preX+i.x,this.preY+i.y) && !tls[this.preY+i.y][this.preX+i.x].current){
@@ -254,11 +254,15 @@ export class Tetris extends Component {
 
     speeded = false
 
+    moveDir = 0
+
     speedChange = [800, 700, 650, 600, 550, 500, 450, 400, 350, 320, 280, 240, 220, 200, 180, 160, 140, 120, 100, 90, 80, 70, 60, 50]
 
     speedChangeCondition = [0, 300, 500, 700, 1000, 1600, 2400, 3600, 4800, 6000, 8800, 9900, 12000, 14000, 18000, 22000, 25000, 35000, 60000, 90000, 130000, 160000, 200000, 250000]
     
     goDownTimeout = null
+
+    gameEnded = false
 
     init = () => {
         this.newBlock()
@@ -267,8 +271,13 @@ export class Tetris extends Component {
 
     gameover = () => {
         //todo
+        this.gameEnded = true
         this.paused = true
-        //window.alert("Game over.")
+        this.setState({
+            paused: this.paused
+        })
+        window.setTimeout(() => {window.alert('Game over.')}, 1000)
+        this.props.gameEnd()
     }
 
     clearLines = (lines) => {
@@ -373,10 +382,12 @@ export class Tetris extends Component {
         }
     }
 
-    move = (dir) => {
+    move = () => {
         if (this.paused) return
         let cs = this.state.current
         let tls = this.state.tiles
+        let dir = this.moveDir
+        if (dir===0) return
 
         if (this.isInWidthBounds(cs.shape, cs.flip, cs.x+dir) && !this.checkCollapse({shape:cs.shape, flip:cs.flip, x:cs.x+dir, y:cs.y, tls})) {
             //remove old
@@ -490,20 +501,27 @@ export class Tetris extends Component {
     }
 
     hardLand = () => {
+        if (this.paused) return
         let cs = this.state.current
         let tls = this.state.tiles
-        if (cs.preY) {
+        if (cs.preY!=null) {
             cs.remove({self:this,tls})
             cs.y = cs.preY
             cs.add({self:this,tls})
             cs.noLongerCurrent({self:this,tls})
+
+            if (cs.y<0) {
+                this.gameover()
+                return
+            }
+
+            this.setState({
+                current: cs,
+                tiles: tls
+            })
+            this.checkLines()
+            this.newBlock()
         }
-        this.setState({
-            current: cs,
-            tiles: tls
-        })
-        this.checkLines()
-        this.newBlock()
     }
 
     componentDidMount() {
@@ -520,6 +538,7 @@ export class Tetris extends Component {
     componentWillUnmount() {
         //console.log("Tetris will unmount")
         this.paused = true
+        this.gameEnded = true
         window.removeEventListener("keydown", this.keyDownListener)
         window.removeEventListener("keyup", this.keyUpListener)
         this.props.leaveGame()
@@ -537,10 +556,22 @@ export class Tetris extends Component {
         //console.log(e.keyCode);
         switch (e.keyCode) {
             case 37:
-                this.move(-1)
+                if (!this.moveDir) {
+                    this.moveDir = -1
+                    this.move()
+                    this.moveInterval = window.setInterval(this.move, this.settings.userMoveInterval)
+                } else {
+                    this.moveDir = -1
+                }
                 break
             case 39:
-                this.move(1)
+                if (!this.moveDir) {
+                    this.moveDir = 1
+                    this.move()
+                    this.moveInterval = window.setInterval(this.move, this.settings.userMoveInterval)
+                } else {
+                    this.moveDir = 1
+                }
                 break
             case 38:
                 this.rotate()
@@ -552,6 +583,7 @@ export class Tetris extends Component {
                 this.hardLand()
                 break
             case 27:
+                if (this.gameEnded) break
                 this.paused = !this.paused //separate from state.paused, since state updates may be asynchronous
                 this.setState({
                     paused: this.paused
@@ -571,8 +603,9 @@ export class Tetris extends Component {
     keyUp = (e) => {
         switch (e.keyCode) {
             case 37:
-                break
             case 39:
+                this.moveDir = 0
+                window.clearInterval(this.moveInterval)
                 break
             case 38:
                 break
@@ -624,8 +657,8 @@ export class Tetris extends Component {
                                             {
                                                 a.map((b,bid) => (
                                                     <div className="arcade-tetris-tile" key={bid} style={{
-                                                        width: b.size+"px",
-                                                        height: b.size+"px",
+                                                        width: (b.size+1)+"px",
+                                                        height: (b.size+1)+"px",
                                                         top: (b.size*b.x)+"px",
                                                         left: (b.size*b.y)+"px",
                                                         backgroundColor: b.color

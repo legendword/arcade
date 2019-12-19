@@ -9,9 +9,9 @@ export class App extends React.Component {
   state = {
     loggedIn: true,
     user: {
-      name: "Programmer",
+      name: "Legendword Insiders",
       level: 1,
-      levelexp: 40,
+      levelexp: 0,
       levelupexp: 100
     },
     inGame: false,
@@ -20,6 +20,12 @@ export class App extends React.Component {
 
   signInEvent = (e) => {
     e.preventDefault()
+  }
+
+  gameEnd = () => {
+    this.setState({
+      inGame: false
+    })
   }
 
   leaveGame = () => {
@@ -44,7 +50,7 @@ export class App extends React.Component {
           <Header inGame={this.state.inGame} leaveGame={this.leaveGame} />
           <Switch>
             <Route path="/play">
-              <PlayContent loggedIn={this.state.loggedIn} user={this.state.user} signInEvent={this.signInEvent} inGame={this.state.inGame} currentGame={this.state.currentGame} gameSelect={this.gameSelect} leaveGame={this.leaveGame} />
+              <PlayContent loggedIn={this.state.loggedIn} user={this.state.user} signInEvent={this.signInEvent} inGame={this.state.inGame} currentGame={this.state.currentGame} gameSelect={this.gameSelect} leaveGame={this.leaveGame} gameEnd={this.gameEnd} />
             </Route>
             <Route path="/home">
               <HomeContent loggedIn={this.state.loggedIn} user={this.state.user} signInEvent={this.signInEvent} />

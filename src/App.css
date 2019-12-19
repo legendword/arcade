@@ -15,6 +15,10 @@ body {
   top: -5%;
 }
 
+.arcade-mine-tile.wrongflag {
+  background: darkred;
+}
+
 .arcade-mine-tile.unopened {
   background: silver;
 }
@@ -163,6 +167,12 @@ body {
   padding-right: 5vw;
 }
 
+/* Home -> Changelog */
+.arcade-changelog-container {
+  overflow: auto;
+  height: calc(100vh - 100px);
+}
+
 /* Home -> Dashboard */
 .arcade-dashboard-title-small {
   font-size: 60%;
@@ -180,6 +190,29 @@ body {
 
 .arcade-home-content .arcade-home-dashboard {
   flex: 4;
+}
+
+/* Home -> Header */
+.arcade-header-nav {
+  padding: 0;
+}
+
+.arcade-header-brand {
+  padding: 0.8125rem 0 0.8125rem 1rem;
+}
+
+.arcade-header-link {
+  padding: 1rem 0.75rem !important;
+  transition: background-color 0.5s;
+}
+
+.arcade-header-link:hover, .arcade-header-link:active {
+  background-color: #b2edff96;
+  transition: background-color 0.5s;
+}
+
+.arcade-header-link.active {
+  background-color: #87f4ff66;
 }
 
 /* Home -> Sidebar */

@@ -83,7 +83,7 @@ export class Minesweeper extends Component {
     currentDifficulty = null
 
     settings = {
-        difficulty: 2,
+        difficulty: 0,
         tileSize: 30 //related to some CSS as well, so don't ONLY change this
     }
 
@@ -93,6 +93,8 @@ export class Minesweeper extends Component {
     revealing = false
     revealArray = null
     revealMode = "normal"
+
+    gameEnded = false
 
     loadDifficulty = (ref) => {
         let dif = this.difficulties[this.settings.difficulty]
@@ -131,11 +133,23 @@ export class Minesweeper extends Component {
 
     gameover = (win) => {
         //!todo
+        this.gameEnded = true
+        this.props.gameEnd()
         if (win) {
-            window.alert("You Won!")
+            let tls = this.state.tiles
+            this.revealFullMap({tls})
+            this.setState({
+                tiles: tls
+            })
+            window.setTimeout(() => {window.alert("You Won!")}, 500)
         }
         else {
-            window.alert("You Lost.")
+            let tls = this.state.tiles
+            this.revealBombs({tls})
+            this.setState({
+                tiles: tls
+            })
+            window.setTimeout(() => {window.alert("You Lost.")}, 500)
         }
     }
 
@@ -151,6 +165,46 @@ export class Minesweeper extends Component {
     genKey = (x,y) => (x+","+y)
 
     genArr = (x,y) => [x,y]
+
+    revealBombs = (ref) => {
+        let tls = ref.tls
+        for (let i=0;i<this.currentDifficulty.width;i++){
+            for (let j=0;j<this.currentDifficulty.height;j++){
+                let k = this.genKey(i,j)
+                if (tls[k].n===9) {
+                    if (!tls[k].flagged) {
+                        tls[k].text = mineImage
+                    }
+                }
+                else if (tls[k].flagged) { //wrong flag
+                    tls[k].state = "wrongflag"
+                }
+            }
+        }
+    }
+
+    revealFullMap = (ref) => {
+        let tls = ref.tls
+        for (let i=0;i<this.currentDifficulty.width;i++){
+            for (let j=0;j<this.currentDifficulty.height;j++){
+                let k = this.genKey(i,j)
+                if (tls[k].n===9) {
+                    if (!tls[k].flagged) {
+                        tls[k].state = "flagged"
+                        tls[k].text = flagImage
+                        tls[k].flagged = true
+                    }
+                }
+                else if (tls[k].flagged) { //wrong flag, shouldn't happen in this function since it's called by gameover(1)
+                    tls[k].state = "wrongflag"
+                }
+                else if (!tls[k].clicked) {
+                    tls[k].state = "opened"
+                    tls[k].clicked = true
+                }
+            }
+        }
+    }
 
     flag = (ref) => {
         let tls = ref.tls
@@ -188,13 +242,13 @@ export class Minesweeper extends Component {
             if (tl.n===9) {
                 tl.state = "mine"
                 tl.text = mineImage
-                //this.gameover(false)
+                this.gameover(false)
                 return
             }
             else {
                 this.setState((st) => {
-                    console.log("inside", st.grids, st.flags, st.opens)
-                    if (st.grids==st.flags+st.opens+1) {
+                    console.log("inside", st.grids, st.flags, st.mines, st.opens+1)
+                    if (st.grids==st.mines+st.opens+1) {
                         this.gameover(true)
                         return {}
                     }
@@ -244,6 +298,7 @@ export class Minesweeper extends Component {
 
     mouseDown = (tl,e) => {
         //console.log(tl, e.nativeEvent.which)
+        if (this.gameEnded) return
         e.preventDefault()
         let tls = this.state.tiles
         switch (e.nativeEvent.which) {
@@ -272,6 +327,7 @@ export class Minesweeper extends Component {
 
     mouseUp = (tl, e) => {
         //console.log(tl, e.nativeEvent.which)
+        if (this.gameEnded) return
         e.preventDefault()
         let tls = this.state.tiles
         switch (e.nativeEvent.which) {

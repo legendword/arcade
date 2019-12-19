@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
+import Changelog from './Changelog'
 
 export class HomeDashboard extends Component {
     render() {
         return (
             <Switch>
+                <Route path="/home/changelog">
+                    <Changelog />
+                </Route>
                 <Route path="/home/friends">
                     <div className="container">
-                        <h1>Friends</h1>
+                        <p>Friends Tab coming soon!</p>
                     </div>
                 </Route>
                 <Route path="/home/progress">
@@ -24,6 +28,8 @@ export class HomeDashboard extends Component {
                                 <div className="progress-bar" style={{width:(this.props.user.levelexp/this.props.user.levelupexp)*100+"%"}}></div>
                             </div>
                         </div>
+                        <h5 style={{marginTop: "max(4vh,20px)",color: "#e48d1f"}}>Legendword Arcade Insiders Beta 0.1.1</h5>
+                        <p style={{color: "#e48d1f"}}>Submit Issues through <a href="https://github.com/legendword/arcade/issues">the GitHub Repo</a>.</p>
                         <div className="row" style={{marginTop: "max(4vh,20px)"}}>
                             <div className="col-md-7">
                                 <div className="arcade-dashboard-highscore">
