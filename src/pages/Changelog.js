@@ -7,7 +7,20 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.1" date="">
+                <Commit id="" ver="0.1.2" date="">
+                    <ul>
+                        <li>MineSweeper Settings button now works, providing the option to change difficulty level. (Currently only 3 preset levels: Easy, Medium, and Hard. Custom difficulties may be added in the future.)</li>
+                        <li>MineSweeper time counting implemented.</li>
+                        <li>Several minor bug fixes:
+                            <br />
+                            <b>MineSweeper</b>
+                            <ul>
+                                <li>When auto-flagging all remaining mines (when there are only unflagged mines left on the map), the flag count now displays the correct number.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </Commit>
+                <Commit id="5ec11a7cbc18b3d996f7749d12d8323c440c22ff" ver="0.1.1" date="Dec. 18, 2019">
                     <ul>
                         <li>Added a Changelog tab in Home. Starting to write changelogs for future commits.</li>
                         <li>Added Insiders Beta information in Home/Overview tab.</li>
@@ -21,6 +34,7 @@ export class Changelog extends Component {
                             <ul>
                                 <li>Player can no longer hard land (using SPACE) while paused/gameover.</li>
                                 <li>Player can no longer un-pause the game after losing the game.</li>
+                                <li>Fixed a bug where the gray drop position continues to show after player moves away from the left-most column.</li>
                             </ul>
                             <b>MineSweeper</b>
                             <ul>

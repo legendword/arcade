@@ -29,17 +29,14 @@ export class Minesweeper extends Component {
     constructor(props) {
         super(props)
 
-        let tls = {}
-        this.loadDifficulty({tls})
-
         this.state = {
-            tiles: tls,
+            tiles: {},
             flags: 0,
             opens: 0,
-            mode: this.currentDifficulty.name,
-            mines: this.currentDifficulty.mines,
-            grids: this.currentDifficulty.width*this.currentDifficulty.height,
-            time: 0
+            time: 0,
+            modal: {
+                show: false
+            }
         }
 
         this.mainElement = React.createRef()
@@ -83,7 +80,7 @@ export class Minesweeper extends Component {
     currentDifficulty = null
 
     settings = {
-        difficulty: 0,
+        difficulty: 2,
         tileSize: 30 //related to some CSS as well, so don't ONLY change this
     }
 
@@ -94,7 +91,115 @@ export class Minesweeper extends Component {
     revealArray = null
     revealMode = "normal"
 
+    paused = false
     gameEnded = false
+
+    timer = null
+
+    init = () => { //for init/restart game
+        //reset variables
+        if (this.timer) {
+            window.clearInterval(this.timer)
+        }
+        this.timer = this.revealArray = null
+        this.firstClick = true
+        this.revealing = false
+        this.hold = [0,0]
+        this.revealMode = "normal"
+
+        //init tiles, load difficulty
+        let tls = {}
+        this.loadDifficulty({tls})
+
+        //update state
+        this.setState({
+            tiles: tls,
+            flags: 0,
+            opens: 0,
+            time: 0,
+            modal: {
+                show: false
+            },
+            mode: this.currentDifficulty.name,
+            mines: this.currentDifficulty.mines,
+            grids: this.currentDifficulty.width*this.currentDifficulty.height
+        })
+
+        //scale game to window size
+        let tm = (window.innerWidth - 40)/(this.settings.tileSize*this.currentDifficulty.width);
+        let dm = (window.innerHeight - 60 - 60 - 10 - 30 - 40)/(this.settings.tileSize*this.currentDifficulty.height);
+        this.mainElement.current.style.transform = "scale("+Math.min(tm,dm)+")";
+        this.mainElement.current.style.left = "calc( 50% - " + (Math.min(tm,dm)*((this.settings.tileSize+1)*this.currentDifficulty.width) / 2) + "px )";
+
+        //un-pause & un-end
+        this.paused = this.gameEnded = false
+
+        //start timer
+        this.timer = window.setInterval(this.timeFunction, 1000)
+    }
+
+    settingRender = () => {
+        return (
+            <div>
+                <div className="form-group row">
+                    <span className="col-sm-2 col-form-label">Difficulty</span>
+                    <div className="col-sm-10">
+                        <select className="form-control" value={this.settings.difficulty} onChange={this.changeDifficulty}>
+                            {this.difficulties.map((v,d)=>(
+                                <option key={d} value={d}>{v.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    changeDifficulty = (e) => {
+        //console.log(e.target.value, this.settings.difficulty)
+        this.settings.difficulty = parseInt(e.target.value)
+        this.init()
+    }
+
+    timeFunction = () => {
+        if (this.state.modal.show) return
+        this.setState((st) => ({
+            time: st.time + 1
+        }))
+    }
+
+    showModal = (title, content, primaryAction, secondaryAction) => {
+        if ((typeof content)==="function") {
+            content = content()
+        }
+        this.setState({
+            modal: {
+                show: true,
+                title,
+                content,
+                primaryAction,
+                secondaryAction
+            }
+        })
+    }
+
+    closeModal = () => {
+        this.setState({
+            modal: {
+                show: false
+            }
+        })
+    }
+
+    pauseGame = () => {
+        this.paused = !this.paused;
+        if (this.paused) {
+            window.clearInterval(this.timer)
+        }
+        else {
+            this.timer = window.setInterval(this.timeFunction, 1000)
+        }
+    }
 
     loadDifficulty = (ref) => {
         let dif = this.difficulties[this.settings.difficulty]
@@ -133,13 +238,15 @@ export class Minesweeper extends Component {
 
     gameover = (win) => {
         //!todo
+        this.pauseGame()
         this.gameEnded = true
         this.props.gameEnd()
         if (win) {
             let tls = this.state.tiles
             this.revealFullMap({tls})
             this.setState({
-                tiles: tls
+                tiles: tls,
+                flags: this.state.mines
             })
             window.setTimeout(() => {window.alert("You Won!")}, 500)
         }
@@ -229,6 +336,7 @@ export class Minesweeper extends Component {
     }
 
     click = (ref) => {
+        if (this.paused) return
         let tls = ref.tls
         let tl = tls[this.genKey(ref.x,ref.y)]
         if (tl.clicked) {
@@ -246,16 +354,14 @@ export class Minesweeper extends Component {
                 return
             }
             else {
-                this.setState((st) => {
-                    console.log("inside", st.grids, st.flags, st.mines, st.opens+1)
-                    if (st.grids==st.mines+st.opens+1) {
-                        this.gameover(true)
-                        return {}
-                    }
-                    return {
+                if (this.state.grids===this.state.mines+this.state.opens+1) {
+                    window.setTimeout(this.gameover(true), 100)
+                }
+                this.setState((st) => (
+                    {
                         opens: st.opens + 1
                     }
-                })
+                ))
                 tl.text = tl.n===0?" ":tl.n
                 tl.state = "opened"
                 if (tl.n===0) {
@@ -268,6 +374,7 @@ export class Minesweeper extends Component {
     }
 
     reveal = (ref) => {
+        if (this.paused) return
         let tls = ref.tls
         let ard = this.around(ref.x,ref.y).toKeyArray()
         
@@ -282,6 +389,7 @@ export class Minesweeper extends Component {
     }
 
     endReveal = (ref) => {
+        if (this.gameEnded) return
         let tls = ref.tls
         if (this.revealMode=="normal") {
             for (let i of this.revealArray) {
@@ -297,6 +405,7 @@ export class Minesweeper extends Component {
     }
 
     mouseDown = (tl,e) => {
+        if (this.paused) return
         //console.log(tl, e.nativeEvent.which)
         if (this.gameEnded) return
         e.preventDefault()
@@ -374,10 +483,7 @@ export class Minesweeper extends Component {
     }
 
     componentDidMount() {
-        let tm = (window.innerWidth - 40)/(this.settings.tileSize*this.currentDifficulty.width);
-        let dm = (window.innerHeight - 60 - 60 - 10 - 30 - 40)/(this.settings.tileSize*this.currentDifficulty.height);
-        this.mainElement.current.style.transform = "scale("+Math.min(tm,dm)+")";
-        this.mainElement.current.style.left = "calc( 50% - " + (Math.min(tm,dm)*((this.settings.tileSize+1)*this.currentDifficulty.width) / 2) + "px )";
+        this.init()
 
         //this.mouseDownListener = window.addEventListener("mousedown", this.mouseDown)
         //this.mouseUpListener = window.addEventListener("mouseup", this.mouseUp)
@@ -397,21 +503,21 @@ export class Minesweeper extends Component {
     render() {
         return (
             <div>
-                <div className="modal" tabIndex="-1">
+                <div className="modal" tabIndex="-1" style={{display:this.state.modal.show?"block":"none"}}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Modal title</h5>
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <h5 className="modal-title">{this.state.modal.title}</h5>
+                            <button type="button" className="close" onClick={this.closeModal}>
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div className="modal-body">
-                            <p>Modal body text goes here.</p>
+                            {this.state.modal.content}
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
+                            <button type="button" className="btn btn-secondary" onClick={this.closeModal}>{this.state.modal.secondaryAction}</button>
+                            <button type="button" className="btn btn-primary">{this.state.modal.primaryAction}</button>
                         </div>
                         </div>
                     </div>
@@ -424,7 +530,7 @@ export class Minesweeper extends Component {
                         <h4 className="text-center d-flex justify-content-between arcade-mine-title-inner">
                             <span style={{visibility:"hidden"}}><button className="btn btn-secondary">Settings</button></span>
                             <span>Mine Sweeper</span>
-                            <span><button className="btn btn-secondary">Settings</button></span>
+                            <span><button className="btn btn-secondary" onClick={this.showModal.bind(this, "Settings", this.settingRender, "OK", "Close")}>Settings</button></span>
                         </h4>
                         <hr className="arcade-mine-hr" />
                     </div>
