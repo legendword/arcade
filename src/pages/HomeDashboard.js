@@ -21,7 +21,7 @@ export class HomeDashboard extends Component {
                     </div>
                 </Route>
                 <Route path="/home/overview">
-                    <div className="container">
+                    <div className="container arcade-dashboard-container">
                         <h2 className="arcade-dashboard-title">{this.props.user.name}</h2>
                         <div className="arcade-dashboard-userlvl">
                             <span>LV. {this.props.user.level} - {this.props.user.levelexp}/{this.props.user.levelupexp}</span>

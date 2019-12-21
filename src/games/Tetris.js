@@ -210,7 +210,7 @@ export class Tetris extends Component {
     constructor(props) {
         super(props)
 
-        //generate initial tiles
+        //generate initial tiles (same as in this.init)
         let tl = []
         for (let i=0;i<20;i++){
             let tt = []
@@ -265,8 +265,52 @@ export class Tetris extends Component {
     gameEnded = false
 
     init = () => {
+        if (!this.paused) {
+            this.paused = true
+            window.clearTimeout(this.goDownTimeout)
+        }
+        //generate initial tiles
+        let tl = []
+        for (let i=0;i<20;i++){
+            let tt = []
+            for (let j=0;j<10;j++){
+                tt.push(new Tile({x:i,y:j,size:30}))
+            }
+            tl.push(tt)
+        }
+        let ntl = []
+        for (let i=0;i<4;i++){
+            let ntt = []
+            for (let j=0;j<3;j++){
+                ntt.push(new Tile({x:i,y:j,size:30}))
+            }
+            ntl.push(ntt)
+        }
+
+        this.state = {
+            tiles: tl,
+            score: 0,
+            level: 1,
+            currentSpeed: 800,
+            speedConverted: 1.25,
+            nextShape: new CurrentShape({shape:this.randomBlock(),x:1,y:3,flip:0}),
+            nextTiles: ntl,
+            current: new CurrentShape({shape:null,x:null,y:null,flip:null}),
+            paused: false
+        }
+
+        this.forceUpdate()
+
+        this.paused = false;
+        this.gameEnded = false;
+        this.mainElement.current.focus()
         this.newBlock()
         this.goDown()
+    }
+
+    restartClick = (e) => {
+        e.nativeEvent.target.blur()
+        this.init()
     }
 
     gameover = () => {
@@ -646,6 +690,9 @@ export class Tetris extends Component {
                                             </div>
                                         ))
                                     }
+                                </div>
+                                <div className="arcade-tetris-leftButtons">
+                                    <button className="btn btn-secondary" onClick={this.restartClick}>Restart</button>
                                 </div>
                             </div>
                         </div>

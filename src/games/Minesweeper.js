@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import flagImageFile from './resources/flag.png'
 import mineImageFile from './resources/mine.png'
+import Modal from '../components/Modal'
 
 const flagImage = <img className="arcade-mine-flagImage" src={flagImageFile} alt="a flag" />
 const mineImage = <img className="arcade-mine-mineImage" src={mineImageFile} alt="a mine" />
@@ -21,6 +22,19 @@ class Tile {
         this.clicked = false
         this.state = "unopened"
         this.text = ""
+        this.color = {
+            "-1": "#000",
+            "0": "#fff",
+            "1": "#1a52f6",
+            "2": "#119b1c",
+            "3": "#c58b07",
+            "4": "#d31212",
+            "5": "#700dc9",
+            "6": "#05bedd",
+            "7": "#f254ec",
+            "8": "#8f1944",
+            "9": "#fff"
+        }
     }
 }
 
@@ -87,6 +101,8 @@ export class Minesweeper extends Component {
     firstClick = true
 
     hold = [0, 0] //mouse button is holding down [left, right]
+    revealSelf = null
+    revealSelfState = null
     revealing = false
     revealArray = null
     revealMode = "normal"
@@ -101,7 +117,7 @@ export class Minesweeper extends Component {
         if (this.timer) {
             window.clearInterval(this.timer)
         }
-        this.timer = this.revealArray = null
+        this.timer = this.revealArray = this.revealSelf = this.revealSelfState = null
         this.firstClick = true
         this.revealing = false
         this.hold = [0,0]
@@ -329,6 +345,10 @@ export class Minesweeper extends Component {
             tl.flagged = true
             tl.state = "flagged"
             tl.text = flagImage
+            //console.log(this.state.grids,this.state.opens,this.state.flags,this.state.mines)
+            if (this.state.grids===this.state.opens+this.state.flags+1) {
+                window.setTimeout(this.gameover(true), 100)
+            }
             this.setState({
                 flags: this.state.flags + 1
             })
@@ -419,11 +439,27 @@ export class Minesweeper extends Component {
                         tiles: tls
                     })
                 }
+                else if (!tl.clicked&&this.revealSelf===null) {
+                    this.revealSelf = this.genKey(tl.x,tl.y)
+                    this.revealSelfState = tls[this.revealSelf].state
+                    tls[this.revealSelf].state = "reveal"
+                    this.setState({
+                        tiles: tls
+                    })
+                }
                 break
             case 3: //right click
                 this.hold[1]++
                 if (this.hold[0]) {
                     this.reveal({tls,x:tl.x,y:tl.y})
+                    this.setState({
+                        tiles: tls
+                    })
+                }
+                else if (!tl.clicked&&this.revealSelf===null) {
+                    this.revealSelf = this.genKey(tl.x,tl.y)
+                    this.revealSelfState = tls[this.revealSelf].state
+                    tls[this.revealSelf].state = "reveal"
                     this.setState({
                         tiles: tls
                     })
@@ -442,8 +478,14 @@ export class Minesweeper extends Component {
         switch (e.nativeEvent.which) {
             case 1: //left click
                 this.hold[0]--
+                if (this.revealSelf!==null) {
+                    tls[this.revealSelf].state = this.revealSelfState
+                    this.revealSelf = this.revealSelfState = null
+                }
                 if (this.revealing) {
-                    this.endReveal({tls})
+                    if (this.hold[0]==0&&this.hold[1]==0) {
+                        this.endReveal({tls})
+                    }
                     this.setState({
                         tiles: tls
                     })
@@ -461,8 +503,14 @@ export class Minesweeper extends Component {
                 break
             case 3: //right click
                 this.hold[1]--
+                if (this.revealSelf!==null) {
+                    tls[this.revealSelf].state = this.revealSelfState
+                    this.revealSelf = this.revealSelfState = null
+                }
                 if (this.revealing) {
-                    this.endReveal({tls})
+                    if (this.hold[0]==0&&this.hold[1]==0) {
+                        this.endReveal({tls})
+                    }
                     this.setState({
                         tiles: tls
                     })
@@ -503,32 +551,14 @@ export class Minesweeper extends Component {
     render() {
         return (
             <div>
-                <div className="modal" tabIndex="-1" style={{display:this.state.modal.show?"block":"none"}}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">{this.state.modal.title}</h5>
-                            <button type="button" className="close" onClick={this.closeModal}>
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            {this.state.modal.content}
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" onClick={this.closeModal}>{this.state.modal.secondaryAction}</button>
-                            <button type="button" className="btn btn-primary">{this.state.modal.primaryAction}</button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
+                <Modal modal={this.state.modal} closeModal={this.closeModal}/>
                 <div className="container">
                     <p className="text-center arcade-game-toosmall">Sorry, your screen is too small to play this game.</p>
                 </div>
                 <div className="arcade-mine-outer">
                     <div className="arcade-mine-title">
                         <h4 className="text-center d-flex justify-content-between arcade-mine-title-inner">
-                            <span style={{visibility:"hidden"}}><button className="btn btn-secondary">Settings</button></span>
+                            <span><button className="btn btn-secondary" onClick={this.init}>Restart</button></span>
                             <span>Mine Sweeper</span>
                             <span><button className="btn btn-secondary" onClick={this.showModal.bind(this, "Settings", this.settingRender, "OK", "Close")}>Settings</button></span>
                         </h4>
@@ -573,7 +603,8 @@ export class Minesweeper extends Component {
                                     width: (this.settings.tileSize+1)+"px",
                                     height: (this.settings.tileSize+1)+"px",
                                     left: this.settings.tileSize*value.x+"px",
-                                    top: this.settings.tileSize*value.y+"px"
+                                    top: this.settings.tileSize*value.y+"px",
+                                    color: value.color[value.n]
                                 }} onMouseDown={this.mouseDown.bind(this, value)} onMouseUp={this.mouseUp.bind(this, value)} onContextMenu={this.contextMenu}>
                                     {value.text}
                                 </div>

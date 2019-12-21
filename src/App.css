@@ -49,6 +49,7 @@ body {
   -moz-user-select: none;
   user-select: none;
   cursor: default;
+  font-weight: 500;
 }
 
 .arcade-mine-hr {
@@ -78,7 +79,17 @@ body {
 }
 
 
+
 /* Tetris */
+.arcade-tetris-leftButtons {
+  margin-top: 180px;
+  width: 100%;
+}
+.arcade-tetris-leftButtons .btn {
+  display: block;
+  margin: auto;
+}
+
 .arcade-tetris-paused {
   font-size: 50%;
   opacity: 0.8;
@@ -167,8 +178,8 @@ body {
   padding-right: 5vw;
 }
 
-/* Home -> Changelog */
-.arcade-changelog-container {
+/* Home -> Container Scrolls */
+.arcade-changelog-container, .arcade-dashboard-container {
   overflow: auto;
   height: calc(100vh - 100px);
 }

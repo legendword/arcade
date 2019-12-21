@@ -10,6 +10,15 @@ export class Header extends Component {
         }
     }
 
+    playClick = () => {
+        if (this.props.inGame) {
+            if (!window.confirm("You're now leaving an ongoing game. Your progress won't be saved.")) {
+                return
+            }
+        }
+        this.props.leaveGame()
+    }
+
     render() {
         return (
             <div className="container-fluid" style={{paddingTop:"60px"}}>
@@ -24,7 +33,7 @@ export class Header extends Component {
                                 <NavLink className="arcade-header-link nav-link" to="/home" activeClassName="arcade-header-link nav-link active" onClick={this.goHome}>Home</NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink className="arcade-header-link nav-link" to="/play" activeClassName="arcade-header-link nav-link active">Play</NavLink>
+                                <NavLink className="arcade-header-link nav-link" to="/play" activeClassName="arcade-header-link nav-link active" onClick={this.playClick}>Play</NavLink>
                             </li>
                         </ul>
                     </div>

@@ -36,7 +36,6 @@ export class App extends React.Component {
   }
 
   gameSelect = (w) => {
-      console.log(w)
       this.setState({
           inGame: true,
           currentGame: w

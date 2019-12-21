@@ -7,7 +7,16 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.2" date="">
+                <Commit id="" ver="0.1.3" date="">
+                    <ul>
+                        <li>You can now click "Play" in the Header to return to Game Select page. Previously, returning to Game Select once in game was only possible by going "Home" and then back to "Play", or by refreshing.</li>
+                        <li>MineSweeper: Added different colors for different numbers.</li>
+                        <li>MineSweeper: Improved the "revealing" algorithm when holding down the mouse, showing white before releasing.</li>
+                        <li>MineSweeper: Added a "Restart" button.</li>
+                        <li>Tetris: Added a "Restart" button as well.</li>
+                    </ul>
+                </Commit>
+                <Commit id="8f55661bce459b0f8f756f8bf47a5b20d0154525" ver="0.1.2" date="Dec. 19, 2019">
                     <ul>
                         <li>MineSweeper Settings button now works, providing the option to change difficulty level. (Currently only 3 preset levels: Easy, Medium, and Hard. Custom difficulties may be added in the future.)</li>
                         <li>MineSweeper time counting implemented.</li>
