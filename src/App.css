@@ -189,6 +189,24 @@ body {
   font-size: 60%;
 }
 
+.arcade-dashboard-goPlay {
+  margin-top: max(2vh, 10px);
+}
+
+/* Home -> Highscore */
+.arcade-highscore-outer {
+  padding: 0 max(2vw, 10px);
+}
+
+.arcade-highscore-row {
+  padding: 10px 0;
+  border-top: 1px solid #e8e8e8;
+}
+
+.arcade-highscore-row:first-of-type {
+  border-top: none;
+}
+
 /* Home -> Home Outer */
 .arcade-home-content {
   display: flex;

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route, Redirect, Link } from 'react-router-dom'
 import Changelog from './Changelog'
 import packageJSON from '../../package.json'
+import Highscores from '../components/Highscores'
 
 export class HomeDashboard extends Component {
     render() {
@@ -29,19 +30,16 @@ export class HomeDashboard extends Component {
                                 <div className="progress-bar" style={{width:(this.props.user.levelexp/this.props.user.levelupexp)*100+"%"}}></div>
                             </div>
                         </div>
-                        <h5 style={{marginTop: "max(4vh,20px)",color: "#e48d1f"}}>Legendword Arcade Insiders Beta {packageJSON?packageJSON.version:""}</h5>
-                        <p style={{color: "#e48d1f"}}>Submit Issues through <a href="https://github.com/legendword/arcade/issues">the GitHub Repo</a>.</p>
-                        <div>
-                            <h4>News</h4>
-                            <p>SquareWarfare is coming to Legendword Arcade!</p>
-                            <p>Canvas based games are harder to program with React, so games like SquareWarfare (Canvas), FlappyBird (Canvas with Phaser.js), and the new single player Snake (Canvas) will take longer to do.</p>
-                            <p>However, 2048 shouldn't take too long, so expect this to be out soon.</p>
+                        <div className="arcade-dashboard-goPlay">
+                            <Link to="/play" className="btn arcade-btn-blue" style={{width:"5rem"}}>Play</Link>
                         </div>
+                        <h5 style={{marginTop: "max(2vh,10px)",color: "#e48d1f"}}>Legendword Arcade Insiders Beta {packageJSON?packageJSON.version:""}</h5>
+                        <p style={{color: "#e48d1f"}}>Submit Issues through <a href="https://github.com/legendword/arcade/issues">the GitHub Repo</a>.</p>
                         <div className="row" style={{marginTop: "max(4vh,20px)"}}>
                             <div className="col-md-7">
                                 <div className="arcade-dashboard-highscore">
                                     <h4>High Scores</h4>
-                                    <p>No Records</p>
+                                    <Highscores highscore={this.props.highscore} />
                                 </div>
                             </div>
                             <div className="col-md-5">

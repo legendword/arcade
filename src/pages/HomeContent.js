@@ -9,7 +9,7 @@ export class HomeContent extends Component {
             return (
                 <div className="arcade-home-content">
                     <Sidebar className="arcade-home-sidebar" />
-                    <HomeDashboard className="arcade-home-dashboard" user={this.props.user} />
+                    <HomeDashboard className="arcade-home-dashboard" user={this.props.user} highscore={this.props.highscore} />
                 </div>
             )
         }

@@ -10,7 +10,7 @@ export class PlayContent extends Component {
                 const Game = this.props.currentGame.component
                 return (
                     <div>
-                        <Game leaveGame={this.props.leaveGame} gameEnd={this.props.gameEnd} />
+                        <Game gameCode={this.props.currentGame.gameCode} leaveGame={this.props.leaveGame} gameEnd={this.props.gameEnd} highscore={this.props.highscore} highscoreUpdate={this.props.highscoreUpdate} />
                     </div>
                 )
             }

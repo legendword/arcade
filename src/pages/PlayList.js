@@ -18,7 +18,7 @@ export class PlayList extends Component {
                                     gameIndex.filter((xx, x) => (x>=v*3&&x<(v+1)*3)).map((w,wi) => (
                                         <div className="col-md-4" key={wi}>
                                             <div className="card arcade-list-card" onClick={this.props.gameSelect.bind(this, w)}>
-                                                <img src="../../favicon.ico" width="100%" alt="" />
+                                                <img src={w.image} width="100%" alt="" />
                                                 <div className="card-body">
                                                     <h5 className="card-title">
                                                         {w.name}

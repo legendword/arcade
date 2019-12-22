@@ -7,7 +7,20 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.3" date="">
+                <Commit id="" ver="0.1.4" date="">
+                    <ul>
+                        <li>Screenshots of the games are displayed at <i>Game Select</i>. (This will likely change in the future as I'm planning on making an icon for each game.)</li>
+                        <li>MineSweeper: Fixed an issue where Game Over won't be triggered if player clicks too fast.</li>
+                        <li>MineSweeper: Added a pop-up for Game Over, showing difficulty, time, and highscore.</li>
+                        <li>Tetris: Added a pop-up for Game Over, showing score and highscore.</li>
+                        <li>Introducing a <i>Highscore System</i> that stores your record scores for each game. Currently, it is stored locally in your browser since the platform isn't connected to any server.</li>
+                        <li>Tetris: Player can now rotate the shape even if it's on the left/right edge.</li>
+                        <li>The <i>High Scores</i> section in <i>Home/Overview</i> now displays your locally stored high scores of the games.</li>
+                        <li>Removed the <i>News</i> section in <i>Home/Overview</i> as it seems unnecessary for now.</li>
+                        <li>Added a <i>Play</i> button in <i>Home/Overview</i> just under the user name and level for better navigation.</li>
+                    </ul>
+                </Commit>
+                <Commit id="354b51421e907e8a0600b3d9d89bca4917e303ea" ver="0.1.3" date="Dec. 20, 2019">
                     <ul>
                         <li>You can now click "Play" in the Header to return to Game Select page. Previously, returning to Game Select once in game was only possible by going "Home" and then back to "Play", or by refreshing.</li>
                         <li>MineSweeper: Added different colors for different numbers.</li>

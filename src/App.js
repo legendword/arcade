@@ -14,8 +14,24 @@ export class App extends React.Component {
       levelexp: 0,
       levelupexp: 100
     },
+    highscore: { //must be either a number or a string from JSON.stringify
+      1: 0,
+      2: null
+    },
     inGame: false,
     currentGame: null
+  }
+
+  fetchHighscore = () => {
+    let st = window.localStorage.getItem("arcade-highscore")
+    if (!st) {
+      window.localStorage.setItem("arcade-highscore", JSON.stringify(this.state.highscore))
+    }
+    else {
+      this.setState({
+        highscore: JSON.parse(st)
+      })
+    }
   }
 
   signInEvent = (e) => {
@@ -42,6 +58,19 @@ export class App extends React.Component {
       })
   }
 
+  highscoreUpdate = (w) => {
+    let hs = this.state.highscore
+    hs[w.gameCode] = w.score
+    window.localStorage.setItem("arcade-highscore", JSON.stringify(hs))
+    this.setState({
+      highscore: hs
+    })
+  }
+
+  componentDidMount() {
+    this.fetchHighscore()
+  }
+
   render() {
     return (
       <HashRouter>
@@ -49,10 +78,10 @@ export class App extends React.Component {
           <Header inGame={this.state.inGame} leaveGame={this.leaveGame} />
           <Switch>
             <Route path="/play">
-              <PlayContent loggedIn={this.state.loggedIn} user={this.state.user} signInEvent={this.signInEvent} inGame={this.state.inGame} currentGame={this.state.currentGame} gameSelect={this.gameSelect} leaveGame={this.leaveGame} gameEnd={this.gameEnd} />
+              <PlayContent loggedIn={this.state.loggedIn} user={this.state.user} highscore={this.state.highscore} highscoreUpdate={this.highscoreUpdate} signInEvent={this.signInEvent} inGame={this.state.inGame} currentGame={this.state.currentGame} gameSelect={this.gameSelect} leaveGame={this.leaveGame} gameEnd={this.gameEnd} />
             </Route>
             <Route path="/home">
-              <HomeContent loggedIn={this.state.loggedIn} user={this.state.user} signInEvent={this.signInEvent} />
+              <HomeContent loggedIn={this.state.loggedIn} user={this.state.user} highscore={this.state.highscore} signInEvent={this.signInEvent} />
             </Route>
             <Route path="/">
               <Redirect to="/home/overview" />

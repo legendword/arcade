@@ -49,7 +49,8 @@ export class Minesweeper extends Component {
             opens: 0,
             time: 0,
             modal: {
-                show: false
+                show: false,
+                buttons: []
             }
         }
 
@@ -112,6 +113,11 @@ export class Minesweeper extends Component {
 
     timer = null
 
+    immediateState = { //this.state but immediate change, for gameOver checks
+        flags: 0,
+        opens: 0
+    }
+
     init = () => { //for init/restart game
         //reset variables
         if (this.timer) {
@@ -134,24 +140,44 @@ export class Minesweeper extends Component {
             opens: 0,
             time: 0,
             modal: {
-                show: false
+                show: false,
+                buttons: []
             },
             mode: this.currentDifficulty.name,
             mines: this.currentDifficulty.mines,
             grids: this.currentDifficulty.width*this.currentDifficulty.height
         })
 
+        //set immediateState
+        this.immediateState = {
+            flags: 0,
+            opens: 0
+        }
+
+        //if no highscore, set highscore
+        let hs = this.props.highscore[this.props.gameCode]
+        if (hs===null||hs===""||(typeof hs)==="number") {
+            let nhs = {
+                "Easy": null,
+                "Medium": null,
+                "Hard": null
+            }
+            this.props.highscoreUpdate({gameCode:this.props.gameCode, score:JSON.stringify(nhs)})
+            hs = nhs
+        }
+        else {
+            hs = JSON.parse(hs)
+        }
+        this.highscore = hs
+
         //scale game to window size
         let tm = (window.innerWidth - 40)/(this.settings.tileSize*this.currentDifficulty.width);
         let dm = (window.innerHeight - 60 - 60 - 10 - 30 - 40)/(this.settings.tileSize*this.currentDifficulty.height);
         this.mainElement.current.style.transform = "scale("+Math.min(tm,dm)+")";
-        this.mainElement.current.style.left = "calc( 50% - " + (Math.min(tm,dm)*((this.settings.tileSize+1)*this.currentDifficulty.width) / 2) + "px )";
+        this.mainElement.current.style.left = "calc( 50% - " + (Math.min(tm,dm)*((this.settings.tileSize)*this.currentDifficulty.width) / 2) + "px )";
 
         //un-pause & un-end
         this.paused = this.gameEnded = false
-
-        //start timer
-        this.timer = window.setInterval(this.timeFunction, 1000)
     }
 
     settingRender = () => {
@@ -184,7 +210,7 @@ export class Minesweeper extends Component {
         }))
     }
 
-    showModal = (title, content, primaryAction, secondaryAction) => {
+    showModal = (title, content, buttons) => {
         if ((typeof content)==="function") {
             content = content()
         }
@@ -193,8 +219,8 @@ export class Minesweeper extends Component {
                 show: true,
                 title,
                 content,
-                primaryAction,
-                secondaryAction
+                buttons,
+                close: this.closeModal
             }
         })
     }
@@ -202,7 +228,8 @@ export class Minesweeper extends Component {
     closeModal = () => {
         this.setState({
             modal: {
-                show: false
+                show: false,
+                buttons: []
             }
         })
     }
@@ -212,7 +239,7 @@ export class Minesweeper extends Component {
         if (this.paused) {
             window.clearInterval(this.timer)
         }
-        else {
+        else if (!this.firstClick) {
             this.timer = window.setInterval(this.timeFunction, 1000)
         }
     }
@@ -252,8 +279,11 @@ export class Minesweeper extends Component {
         }
     }
 
+    updateHighscore = () => {
+        this.props.highscoreUpdate({gameCode:this.props.gameCode, score:JSON.stringify(this.highscore)})
+    }
+
     gameover = (win) => {
-        //!todo
         this.pauseGame()
         this.gameEnded = true
         this.props.gameEnd()
@@ -264,7 +294,61 @@ export class Minesweeper extends Component {
                 tiles: tls,
                 flags: this.state.mines
             })
-            window.setTimeout(() => {window.alert("You Won!")}, 500)
+            if (!this.highscore[this.currentDifficulty.name]||this.state.time<this.highscore[this.currentDifficulty.name]) {
+                this.highscore[this.currentDifficulty.name] = this.state.time
+                this.updateHighscore()
+            }
+            window.setTimeout(() => {
+                this.showModal("Game Over", (
+                    <div>
+                        <h4 className="text-center">You Won!</h4>
+                        <br />
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">Difficulty:</p>
+                            </div>
+                            <div className="col">
+                                <p>{this.state.mode}</p>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">Time:</p>
+                            </div>
+                            <div className="col">
+                                <p>{this.state.time}</p>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">Record Time:</p>
+                            </div>
+                            <div className="col">
+                                <p>{this.highscore[this.currentDifficulty.name]}</p>
+                            </div>
+                        </div>
+                    </div>
+                ), [
+                    {
+                        type: "primary",
+                        text: "Select Game",
+                        callback: this.props.leaveGame
+                    },
+                    {
+                        type: "success",
+                        text: "Play Again",
+                        callback: () => {
+                            this.closeModal()
+                            this.init()
+                        }
+                    },
+                    {
+                        type: "secondary",
+                        text: "Close",
+                        callback: this.closeModal
+                    }
+                ])
+            }, 500)
         }
         else {
             let tls = this.state.tiles
@@ -272,7 +356,57 @@ export class Minesweeper extends Component {
             this.setState({
                 tiles: tls
             })
-            window.setTimeout(() => {window.alert("You Lost.")}, 500)
+            window.setTimeout(() => {
+                this.showModal("Game Over", (
+                    <div>
+                        <h4 className="text-center">You Lost.</h4>
+                        <br />
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">Difficulty:</p>
+                            </div>
+                            <div className="col">
+                                <p>{this.state.mode}</p>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">Time:</p>
+                            </div>
+                            <div className="col">
+                                <p>{this.state.time}</p>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">Record Time:</p>
+                            </div>
+                            <div className="col">
+                                <p>{this.highscore[this.currentDifficulty.name]?this.highscore[this.currentDifficulty.name]:"No Record"}</p>
+                            </div>
+                        </div>
+                    </div>
+                ), [
+                    {
+                        type: "primary",
+                        text: "Select Game",
+                        callback: this.props.leaveGame
+                    },
+                    {
+                        type: "success",
+                        text: "Play Again",
+                        callback: () => {
+                            this.closeModal()
+                            this.init()
+                        }
+                    },
+                    {
+                        type: "secondary",
+                        text: "Close",
+                        callback: this.closeModal
+                    }
+                ])
+            }, 500)
         }
     }
 
@@ -337,21 +471,23 @@ export class Minesweeper extends Component {
             tl.flagged = false
             tl.state = "unopened"
             tl.text = ""
-            this.setState({
-                flags: this.state.flags - 1
-            })
+            this.setState((st) => ({
+                flags: st.flags - 1
+            }))
+            this.immediateState.flags--;
         }
         else {
             tl.flagged = true
             tl.state = "flagged"
             tl.text = flagImage
             //console.log(this.state.grids,this.state.opens,this.state.flags,this.state.mines)
-            if (this.state.grids===this.state.opens+this.state.flags+1) {
+            if (this.state.grids===this.immediateState.opens+this.immediateState.flags+1) {
                 window.setTimeout(this.gameover(true), 100)
             }
-            this.setState({
-                flags: this.state.flags + 1
-            })
+            this.setState((st) => ({
+                flags: st.flags + 1
+            }))
+            this.immediateState.flags++;
         }
     }
 
@@ -374,7 +510,7 @@ export class Minesweeper extends Component {
                 return
             }
             else {
-                if (this.state.grids===this.state.mines+this.state.opens+1) {
+                if (this.state.grids===this.state.mines+this.immediateState.opens+1) {
                     window.setTimeout(this.gameover(true), 100)
                 }
                 this.setState((st) => (
@@ -382,6 +518,7 @@ export class Minesweeper extends Component {
                         opens: st.opens + 1
                     }
                 ))
+                this.immediateState.opens++;
                 tl.text = tl.n===0?" ":tl.n
                 tl.state = "opened"
                 if (tl.n===0) {
@@ -493,7 +630,11 @@ export class Minesweeper extends Component {
                 }
                 if (this.firstClick) {
                     this.generateMap({tls,x:tl.x,y:tl.y})
-                    console.log(tls)
+                    //console.log(tls)
+                    
+                    //start timer
+                    this.timer = window.setInterval(this.timeFunction, 1000)
+
                     this.firstClick = false
                 }
                 this.click({tls,x:tl.x,y:tl.y})
@@ -551,7 +692,7 @@ export class Minesweeper extends Component {
     render() {
         return (
             <div>
-                <Modal modal={this.state.modal} closeModal={this.closeModal}/>
+                <Modal modal={this.state.modal} />
                 <div className="container">
                     <p className="text-center arcade-game-toosmall">Sorry, your screen is too small to play this game.</p>
                 </div>
@@ -560,7 +701,11 @@ export class Minesweeper extends Component {
                         <h4 className="text-center d-flex justify-content-between arcade-mine-title-inner">
                             <span><button className="btn btn-secondary" onClick={this.init}>Restart</button></span>
                             <span>Mine Sweeper</span>
-                            <span><button className="btn btn-secondary" onClick={this.showModal.bind(this, "Settings", this.settingRender, "OK", "Close")}>Settings</button></span>
+                            <span>
+                                <button className="btn btn-secondary" onClick={
+                                    this.showModal.bind(this, "Settings", this.settingRender, [{type:"primary",text:"OK",callback:this.closeModal}])}
+                                >Settings</button>
+                            </span>
                         </h4>
                         <hr className="arcade-mine-hr" />
                     </div>

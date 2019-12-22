@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Modal from '../components/Modal'
 
 class CurrentShape {
     constructor(props) {
@@ -93,6 +94,10 @@ class Tile {
         this.color = "#fff";
         this.hasBlock = false;
         this.current = false;
+    }
+    resetReturn = () => {
+        this.reset()
+        return this
     }
     assign = (values) => {
         this.color = values.color;
@@ -227,6 +232,7 @@ export class Tetris extends Component {
             }
             ntl.push(ntt)
         }
+
         this.state = {
             tiles: tl,
             score: 0,
@@ -235,10 +241,13 @@ export class Tetris extends Component {
             speedConverted: 1.25,
             nextShape: new CurrentShape({shape:this.randomBlock(),x:1,y:3,flip:0}),
             nextTiles: ntl,
-            current: new CurrentShape({shape:null,x:null,y:null,flip:null})
+            current: new CurrentShape({shape:null,x:null,y:null,flip:null}),
+            modal: {
+                show: false,
+                buttons: []
+            },
+            init: false
         }
-
-        this.highScore = 0
 
         //create refs
         this.mainElement = React.createRef()
@@ -287,8 +296,17 @@ export class Tetris extends Component {
             ntl.push(ntt)
         }
 
-        this.state = {
-            tiles: tl,
+        //reset variables
+        this.moveDir = 0
+
+        //load highscore
+        let hs = this.props.highscore[this.props.gameCode]
+        if (hs===null||(typeof hs)!=="number") {
+            this.props.highscoreUpdate({gameCode:this.props.gameCode, score:0})
+        }
+
+        this.setState((st) => ({
+            tiles: st.tiles.map((v) => (v.map(w => (w.resetReturn())))),
             score: 0,
             level: 1,
             currentSpeed: 800,
@@ -296,16 +314,56 @@ export class Tetris extends Component {
             nextShape: new CurrentShape({shape:this.randomBlock(),x:1,y:3,flip:0}),
             nextTiles: ntl,
             current: new CurrentShape({shape:null,x:null,y:null,flip:null}),
-            paused: false
-        }
-
-        this.forceUpdate()
+            paused: false,
+            modal: {
+                show: false,
+                buttons: []
+            },
+            init: true
+        }))
 
         this.paused = false;
         this.gameEnded = false;
+
         this.mainElement.current.focus()
-        this.newBlock()
-        this.goDown()
+    }
+    
+    componentDidUpdate(prevProps, prevState) {
+        if (!prevState.init&&this.state.init) {
+            this.newBlock()
+            this.goDown()
+            this.setState({
+                init: false
+            })
+        }
+    }
+
+    showModal = (title, content, buttons) => {
+        if ((typeof content)==="function") {
+            content = content()
+        }
+        this.setState({
+            modal: {
+                show: true,
+                title,
+                content,
+                buttons,
+                close: this.closeModal
+            }
+        })
+    }
+
+    closeModal = () => {
+        this.setState({
+            modal: {
+                show: false,
+                buttons: []
+            }
+        })
+    }
+
+    updateHighscore = (ns) => {
+        this.props.highscoreUpdate({gameCode: this.props.gameCode, score: ns})
     }
 
     restartClick = (e) => {
@@ -314,13 +372,59 @@ export class Tetris extends Component {
     }
 
     gameover = () => {
-        //todo
         this.gameEnded = true
         this.paused = true
         this.setState({
             paused: this.paused
         })
-        window.setTimeout(() => {window.alert('Game over.')}, 1000)
+        let nhs = false
+        if (this.state.score>this.props.highscore[this.props.gameCode]) {
+            this.updateHighscore(this.state.score)
+            nhs = true
+        }
+        window.setTimeout(() => {
+            this.showModal("Game Over", (
+                <div>
+                    <h4 className="text-center">Game Over</h4>
+                        <br />
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">Score:</p>
+                            </div>
+                            <div className="col">
+                                <p>{this.state.score}</p>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">High Score:</p>
+                            </div>
+                            <div className="col">
+                                <p>{nhs?this.state.score:this.props.highscore[this.props.gameCode]}</p>
+                            </div>
+                        </div>
+                </div>
+            ), [
+                {
+                    type: "primary",
+                    text: "Select Game",
+                    callback: this.props.leaveGame
+                },
+                {
+                    type: "success",
+                    text: "Play Again",
+                    callback: () => {
+                        this.closeModal()
+                        this.init()
+                    }
+                },
+                {
+                    type: "secondary",
+                    text: "Close",
+                    callback: this.closeModal
+                }
+            ])
+        }, 250)
         this.props.gameEnd()
     }
 
@@ -375,7 +479,7 @@ export class Tetris extends Component {
             this.addScore(Math.pow(2, totalLines - 1) * 100)
             window.setTimeout(this.clearLines.bind(this, dellines), this.settings.beforeClearline)    
         }
-        else{
+        else {
             this.addScore(10)
         }
     }
@@ -384,6 +488,14 @@ export class Tetris extends Component {
         let a = x + shape.bounds[flip][0]
         let b = x + shape.bounds[flip][1]
         return a>=0 && b<10
+    }
+
+    widthBoundDelta = (shape, flip, x) => {
+        let a = x + shape.bounds[flip][0]
+        let b = x + shape.bounds[flip][1]
+        if (a<0) return 0-a
+        if (b>=10) return 9-b
+        return 0
     }
 
     isInBorder = (x,y) => {
@@ -409,11 +521,17 @@ export class Tetris extends Component {
         let newFlip = cs.flip + 1
         if (newFlip>=cs.shape.content.length) newFlip = 0
 
-        if (this.isInWidthBounds(cs.shape, newFlip, cs.x) && !this.checkCollapse({shape:cs.shape, flip:newFlip, x:cs.x, y:cs.y, tls})) {
+        let delta = 0
+        if (!this.isInWidthBounds(cs.shape, newFlip, cs.x)) {
+            delta = this.widthBoundDelta(cs.shape, newFlip, cs.x)
+        }
+
+        if (!this.checkCollapse({shape:cs.shape, flip:newFlip, x:cs.x+delta, y:cs.y, tls})) {
             //remove old
             cs.remove({self:this,tls})
             cs.removePre({self:this,tls})
             //
+            cs.x += delta
             cs.flip = newFlip
             //add new
             cs.add({self:this,tls})
@@ -664,6 +782,7 @@ export class Tetris extends Component {
     render() {
         return (
             <div>
+                <Modal modal={this.state.modal} />
                 <div className="container">
                     <p className="text-center arcade-game-toosmall">Sorry, your screen is too small to play this game.</p>
                 </div>
@@ -753,7 +872,7 @@ export class Tetris extends Component {
                                     Score
                                 </div>
                                 <div className="col-md-9 arcade-tetris-score">
-                                    0
+                                    {this.props.highscore[this.props.gameCode]}
                                 </div>
                             </div>
                         </div>
