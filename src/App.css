@@ -7,6 +7,51 @@ body {
 }
 
 
+/* 2048 */
+.arcade-2048-tile {
+  z-index: 3;
+}
+
+.arcade-2048-tile, .arcade-2048-tile-background {
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 101px;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: default;
+  font-weight: 700;
+  border-radius: 5px;
+  font-size: 3rem;
+}
+
+.arcade-2048-tile-background {
+  background-color: #CDC1B4;
+  z-index: 2;
+}
+
+.arcade-2048-game {
+  position: absolute;
+  margin-top: 20px;
+  transform-origin: top left;
+  border-radius: 5px;
+  background: #BBADA0;
+  z-index: 1;
+}
+
+.arcade-2048-title {
+  margin-top: 10px;
+}
+
+.arcade-2048-title-inner {
+  padding: 0 15px;
+  line-height: 38px;
+  vertical-align: middle;
+}
+
+
 /* Minesweeper */
 .arcade-mine-flagImage, .arcade-mine-mineImage {
   width: 90%;

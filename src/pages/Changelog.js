@@ -7,7 +7,15 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.4" date="">
+                <Commit id="" ver="0.1.5" date="">
+                    <ul>
+                        <li>New Game: <b>2048</b> added.</li>
+                        <li>Basic game algorithm is finished (with gameover check).</li>
+                        <li>Score, "Restart" and "Options" button, and animations are all yet to be implemented.</li>
+                        <li>Currently, no screenshot of 2048 is shown at the Game Select list.</li>
+                    </ul>
+                </Commit>
+                <Commit id="416f7d3d6ab02983092822bae1b6ca43412b46a7" ver="0.1.4" date="Dec. 21, 2019">
                     <ul>
                         <li>Screenshots of the games are displayed at <i>Game Select</i>. (This will likely change in the future as I'm planning on making an icon for each game.)</li>
                         <li>MineSweeper: Fixed an issue where Game Over won't be triggered if player clicks too fast.</li>

@@ -2,7 +2,8 @@ import Tetris from './Tetris'
 import TetrisImg from './resources/Tetris.png'
 import Minesweeper from './Minesweeper'
 import MineSweeperImg from './resources/MineSweeper.png'
-//import defaultImg from './resources/favicon.ico'
+import TwentyFortyEight from './TwentyFortyEight'
+import defaultImg from './resources/favicon.ico'
 
 export { Tetris, Minesweeper }
 
@@ -18,6 +19,12 @@ const gameIndex = [
         name: "Mine Sweeper",
         component: Minesweeper,
         image: MineSweeperImg
+    },
+    {
+        gameCode: 3,
+        name: "2048",
+        component: TwentyFortyEight,
+        image: defaultImg
     }
 ]
 

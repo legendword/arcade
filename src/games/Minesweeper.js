@@ -101,7 +101,7 @@ export class Minesweeper extends Component {
 
     firstClick = true
 
-    hold = [0, 0] //mouse button is holding down [left, right]
+    hold = [false, false] //mouse button is holding down [left, right]
     revealSelf = null
     revealSelfState = null
     revealing = false
@@ -118,15 +118,17 @@ export class Minesweeper extends Component {
         opens: 0
     }
 
+    noFlagging = true
+
     init = () => { //for init/restart game
         //reset variables
         if (this.timer) {
             window.clearInterval(this.timer)
         }
         this.timer = this.revealArray = this.revealSelf = this.revealSelfState = null
-        this.firstClick = true
+        this.firstClick = this.noFlagging = true
         this.revealing = false
-        this.hold = [0,0]
+        this.hold = [false , false]
         this.revealMode = "normal"
 
         //init tiles, load difficulty
@@ -308,7 +310,7 @@ export class Minesweeper extends Component {
                                 <p className="text-right">Difficulty:</p>
                             </div>
                             <div className="col">
-                                <p>{this.state.mode}</p>
+                                <p>{this.state.mode} <span style={{color:"red"}}>{this.noFlagging?"Nonflagging":""}</span></p>
                             </div>
                         </div>
                         <div className="row">
@@ -477,6 +479,7 @@ export class Minesweeper extends Component {
             this.immediateState.flags--;
         }
         else {
+            this.noFlagging = false
             tl.flagged = true
             tl.state = "flagged"
             tl.text = flagImage
@@ -569,7 +572,7 @@ export class Minesweeper extends Component {
         let tls = this.state.tiles
         switch (e.nativeEvent.which) {
             case 1: //left click
-                this.hold[0]++
+                this.hold[0] = true
                 if (this.hold[1]) {
                     this.reveal({tls,x:tl.x,y:tl.y})
                     this.setState({
@@ -586,7 +589,7 @@ export class Minesweeper extends Component {
                 }
                 break
             case 3: //right click
-                this.hold[1]++
+                this.hold[1] = true
                 if (this.hold[0]) {
                     this.reveal({tls,x:tl.x,y:tl.y})
                     this.setState({
@@ -614,13 +617,13 @@ export class Minesweeper extends Component {
         let tls = this.state.tiles
         switch (e.nativeEvent.which) {
             case 1: //left click
-                this.hold[0]--
+                this.hold[0] = false
                 if (this.revealSelf!==null) {
                     tls[this.revealSelf].state = this.revealSelfState
                     this.revealSelf = this.revealSelfState = null
                 }
                 if (this.revealing) {
-                    if (this.hold[0]==0&&this.hold[1]==0) {
+                    if (this.hold[0]===false&&this.hold[1]===false) {
                         this.endReveal({tls})
                     }
                     this.setState({
@@ -631,7 +634,7 @@ export class Minesweeper extends Component {
                 if (this.firstClick) {
                     this.generateMap({tls,x:tl.x,y:tl.y})
                     //console.log(tls)
-                    
+
                     //start timer
                     this.timer = window.setInterval(this.timeFunction, 1000)
 
@@ -643,13 +646,13 @@ export class Minesweeper extends Component {
                 })
                 break
             case 3: //right click
-                this.hold[1]--
+                this.hold[1] = false
                 if (this.revealSelf!==null) {
                     tls[this.revealSelf].state = this.revealSelfState
                     this.revealSelf = this.revealSelfState = null
                 }
                 if (this.revealing) {
-                    if (this.hold[0]==0&&this.hold[1]==0) {
+                    if (this.hold[0]===false&&this.hold[1]===false) {
                         this.endReveal({tls})
                     }
                     this.setState({
