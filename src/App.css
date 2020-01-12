@@ -8,7 +8,46 @@ body {
 
 
 /* 2048 */
+@keyframes pop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.arcade-2048-tile.new {
+  transition: none;
+  opacity: 0;
+  animation: appear 200ms ease 100ms;
+  animation-fill-mode: forwards;
+}
+
+.arcade-2048-tile.merged .arcade-2048-tile-inner {
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  border-radius: inherit;
+  animation: pop 100ms ease 100ms;
+  animation-fill-mode: backwards;
+}
+
 .arcade-2048-tile {
+  transition: transform 100ms ease-in-out, background-color 50ms ease 200ms, color 50ms ease 200ms;
   z-index: 3;
 }
 

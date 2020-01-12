@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import uuid from 'react-uuid'
 
 const tileColors = ['#3C3A32','#EEE4DA','#EDE0C8','#F2B179','#F59563','#F67C5F','#F65E3B','#EDCF72','#EDCC61','#EDC850','#EDC53F','#EDC22E']
 const tileSize = 100
@@ -10,6 +11,9 @@ class Tile {
         this.x = props.x
         this.y = props.y
         this.n = props.n
+        this.isNew = true
+        this.isMerged = false
+        this.destroyed = false
         this.calcProps()
     }
 
@@ -17,6 +21,7 @@ class Tile {
         this.ind = this.x*4 + this.y
         this.top = this.x * (tileSize + tileMargin) + 1.5 * tileMargin
         this.left = this.y * (tileSize + tileMargin) + 1.5 * tileMargin
+        this.transform = "translate( "+this.left+"px , "+this.top+"px )"
         this.number = 2**this.n
         this.color = this.n>=tileColors.length?tileColors[0]:tileColors[this.n]
         this.fontColor = this.n==1?"#776E65":"#F9F6F2"
@@ -29,9 +34,7 @@ export class TwentyFortyEight extends Component {
         super(props)
 
         this.state = {
-            tiles: [],
-            step: 0
-        }
+            tiles: {}        }
 
         this.backgroundTiles = [];
         for (let i=0;i<4;i++) {
@@ -49,15 +52,14 @@ export class TwentyFortyEight extends Component {
     numbers = new Array(16).fill(0)
     numToTile = new Array(16).fill(-1)
 
-    step = 0
-
-    generateTiles = (ref) => {
+    generateTiles = () => {
+        console.log("Generate tiles...")
         if (this.validCount===0) {
             window.alert("No More Valid Tiles, Game Over")
             return
         }
 
-        let tls = ref.tls
+        let tls = this.state.tiles
 
         let howMany = Math.min(Math.random()>0.9?2:1, this.validCount)
         do {
@@ -66,37 +68,33 @@ export class TwentyFortyEight extends Component {
                 ri = Math.floor(Math.random()*16)
             }
             let rn = Math.random()>0.9?2:1;
-            tls.push(new Tile({x:parseInt(ri/4),y:ri%4,n:rn}))
+            
+            let uni = uuid()
+            tls[uni] = new Tile({x:parseInt(ri/4),y:ri%4,n:rn})
             this.valid[ri] = false
             this.validCount--
             this.numbers[ri] = rn
-            this.numToTile[ri] = tls.length-1
+            this.numToTile[ri] = uni
             console.log("+"+ri)
             howMany--
         } while (howMany>0)
-        /*
-        this.setState((state,props) => {
-            return {
-                tiles: state.tiles.concat(ntls)
-            }
-        })
-        */
-    }
 
-    remove = (ref, index) => {
-        let tls = ref.tls
-        for (let i=0;i<16;i++) {
-            if (this.numToTile[i]>index) this.numToTile[i]--
-        }
-        tls.splice(index,1)
+        this.setState({
+            tiles: tls
+        })
     }
 
     move = (dx, dy) => {
-        if (this.state.step!==this.step) {
-            console.log("Too Fast")
-            return
-        }
         let tls = this.state.tiles
+        for (let i in tls) {
+            if (tls[i].destroyed||tls[i].isMerged) {
+                delete tls[i]
+            }
+            else {
+                if (tls[i].isNew) tls[i].isNew = false
+            }
+        }
+        let moved = false
         for (let i=0;i<4;i++) {
             for (let j=0;j<4;j++) {
                 let k = (dx>0?3-i:i)*4 + (dy>0?3-j:j)
@@ -111,16 +109,28 @@ export class TwentyFortyEight extends Component {
                                     this.numbers[m]++
                                     this.numbers[k] = 0
 
+                                    let mgid = uuid()
+                                    tls[mgid] = new Tile({x:tls[this.numToTile[m]].x,y:tls[this.numToTile[m]].y,n:tls[this.numToTile[m]].n+1})
+                                    tls[mgid].isNew = false
+                                    tls[mgid].isMerged = true
+
                                     tls[this.numToTile[m]].n++
                                     tls[this.numToTile[m]].calcProps()
 
-                                    this.remove({tls},this.numToTile[k])
+                                    tls[this.numToTile[k]].n++
+                                    tls[this.numToTile[k]].x = tls[this.numToTile[m]].x
+                                    tls[this.numToTile[k]].y = tls[this.numToTile[m]].y
+                                    tls[this.numToTile[k]].calcProps()
+
+                                    tls[this.numToTile[k]].destroyed = true
                                     this.numToTile[k] = -1
 
                                     this.valid[k] = true
                                     this.validCount++
 
                                     lastOne = -1
+
+                                    moved = true
                                 }
                                 break
                             }
@@ -133,19 +143,31 @@ export class TwentyFortyEight extends Component {
                             if (this.numbers[m]!==0) {
                                 if (this.numbers[m]===this.numbers[k]) {
                                     console.log("+"+m+" -"+k)
-                                    this.numbers[m] = this.numbers[m] + 1
+                                    this.numbers[m]++
                                     this.numbers[k] = 0
+
+                                    let mgid = uuid()
+                                    tls[mgid] = new Tile({x:tls[this.numToTile[m]].x,y:tls[this.numToTile[m]].y,n:tls[this.numToTile[m]].n+1})
+                                    tls[mgid].isNew = false
+                                    tls[mgid].isMerged = true
 
                                     tls[this.numToTile[m]].n++
                                     tls[this.numToTile[m]].calcProps()
 
-                                    this.remove({tls},this.numToTile[k])
+                                    tls[this.numToTile[k]].n++
+                                    tls[this.numToTile[k]].x = tls[this.numToTile[m]].x
+                                    tls[this.numToTile[k]].y = tls[this.numToTile[m]].y
+                                    tls[this.numToTile[k]].calcProps()
+
+                                    tls[this.numToTile[k]].destroyed = true
                                     this.numToTile[k] = -1
 
                                     this.valid[k] = true
                                     this.validCount++
 
                                     lastOne = -1
+
+                                    moved = true
                                 }
                                 break
                             }
@@ -168,19 +190,18 @@ export class TwentyFortyEight extends Component {
 
                         this.valid[k] = true
                         this.valid[lastOne] = false
+
+                        moved = true
                     }
                 }
             }
         }
         
-        this.generateTiles({tls})
-        console.log(tls,this.valid,this.validCount,this.numbers,this.numToTile)
-        let sp = this.step + 1
         this.setState({
-            tiles: tls,
-            step: sp
+            tiles: tls
         })
-        this.step++
+
+        if (moved) this.generateTiles()
     }
 
     init = () => {
@@ -189,7 +210,6 @@ export class TwentyFortyEight extends Component {
         this.validCount = 16
         this.numbers = new Array(16).fill(0)
         this.numToTile = new Array(16).fill(-1)
-        this.step = 1
 
         //scale game to window size
         let tm = (window.innerWidth - 40)/(tileSize*4+tileMargin*6);
@@ -197,12 +217,7 @@ export class TwentyFortyEight extends Component {
         this.mainElement.current.style.transform = "scale("+Math.min(tm,dm)+")";
         this.mainElement.current.style.left = "calc( 50% - " + (Math.min(tm,dm)*(tileSize*4+tileMargin*5) / 2) + "px )";
 
-        let tls = this.state.tiles
-        this.generateTiles({tls})
-        this.setState({
-            tiles: tls,
-            step: 1
-        })
+        this.generateTiles()
     }
 
     keyDown = (e) => {
@@ -259,16 +274,17 @@ export class TwentyFortyEight extends Component {
                         height: (tileSize*4+tileMargin*6)
                     }}>
                         {
-                            this.state.tiles.map((v,ind) => (
-                                <div className="arcade-2048-tile" key={ind} style={{
+                            Object.entries(this.state.tiles).map(([ind,v]) => (
+                                <div className={"arcade-2048-tile"+(v.isNew?" new":"")+(v.isMerged?" merged":"")} key={ind} style={{
                                     width: (tileSize+1)+"px",
                                     height: (tileSize+1)+"px",
-                                    top: v.top+"px",
-                                    left: v.left+"px",
+                                    transform: v.transform,
                                     backgroundColor: v.color,
                                     color: v.fontColor
                                 }}>
-                                    {v.number}
+                                    {
+                                        v.isMerged?(<div className="arcade-2048-tile-inner">{v.number}</div>):v.number
+                                    }
                                 </div>
                             ))
                         }

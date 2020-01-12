@@ -7,7 +7,13 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.5" date="">
+                <Commit id="" ver="0.1.6" date="">
+                    <ul>
+                        <li>2048: added animations.</li>
+                        <li>Bug yet to be fixed: when merging tiles, only one pair of tiles can be merged per row/column per move. Consecutive merges shouldn't be allowed.</li>
+                    </ul>
+                </Commit>
+                <Commit id="5e0aa36aaec65b5d0d19d0d18a3631f4de137f1b" ver="0.1.5" date="Jan. 6, 2020">
                     <ul>
                         <li>New Game: <b>2048</b> added.</li>
                         <li>Basic game algorithm is finished (with gameover check).</li>
