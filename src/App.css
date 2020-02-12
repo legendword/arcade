@@ -71,6 +71,18 @@ body {
   z-index: 2;
 }
 
+.arcade-2048-score {
+  font-size: 2.2rem;
+}
+
+.arcade-2048-sidecol {
+  position: absolute;
+  left: max( 4vw, 10px );
+  top: calc( 120px + ( 100vh - 120px ) / 2 - 12rem / 2 );
+  height: 12rem;
+  width: 10rem;
+}
+
 .arcade-2048-game {
   position: absolute;
   margin-top: 20px;

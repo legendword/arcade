@@ -16,7 +16,8 @@ export class App extends React.Component {
     },
     highscore: { //must be either a number or a string from JSON.stringify
       1: 0,
-      2: null
+      2: null,
+      3: null
     },
     inGame: false,
     currentGame: null

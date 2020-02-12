@@ -7,7 +7,15 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.6" date="">
+                <Commit id="" ver="0.1.7" date="">
+                    <ul>
+                        <li>2048: Added score display and <i>High Score</i> support.</li>
+                        <li>2048: Added Game Over prompt, and <i>Restart</i> button is now functional.</li>
+                        <li>2048: A screenshot of the 2048 game is now showing at the Game Select list.</li>
+                        <li>2048: Fixed the bug mentioned in v0.1.6.</li>
+                    </ul>
+                </Commit>
+                <Commit id="16e86538ca68f48fe7304d973bdcb2e5e01dd9ee" ver="0.1.6" date="Jan. 11, 2020">
                     <ul>
                         <li>2048: added animations.</li>
                         <li>Bug yet to be fixed: when merging tiles, only one pair of tiles can be merged per row/column per move. Consecutive merges shouldn't be allowed.</li>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import uuid from 'react-uuid'
+import Modal from '../components/Modal'
 
 const tileColors = ['#3C3A32','#EEE4DA','#EDE0C8','#F2B179','#F59563','#F67C5F','#F65E3B','#EDCF72','#EDCC61','#EDC850','#EDC53F','#EDC22E']
 const tileSize = 100
@@ -34,7 +35,13 @@ export class TwentyFortyEight extends Component {
         super(props)
 
         this.state = {
-            tiles: {}        }
+            tiles: {},
+            score: 0,
+            modal: {
+                show: false,
+                buttons: []
+            }
+        }
 
         this.backgroundTiles = [];
         for (let i=0;i<4;i++) {
@@ -52,12 +59,93 @@ export class TwentyFortyEight extends Component {
     numbers = new Array(16).fill(0)
     numToTile = new Array(16).fill(-1)
 
-    generateTiles = () => {
-        console.log("Generate tiles...")
-        if (this.validCount===0) {
-            window.alert("No More Valid Tiles, Game Over")
-            return
+    isGameOver = false
+
+    showModal = (title, content, buttons) => {
+        if ((typeof content)==="function") {
+            content = content()
         }
+        this.setState({
+            modal: {
+                show: true,
+                title,
+                content,
+                buttons,
+                close: this.closeModal
+            }
+        })
+    }
+
+    closeModal = () => {
+        this.setState({
+            modal: {
+                show: false,
+                buttons: []
+            }
+        })
+    }
+
+    gameOver = () => {
+        let nhs = false
+        if (this.state.score>this.props.highscore[this.props.gameCode]) {
+            this.props.highscoreUpdate({gameCode:this.props.gameCode, score:this.state.score})
+            nhs = true
+        }
+        window.setTimeout(() => {
+            this.showModal("Game Over", (
+                <div>
+                    <h4 className="text-center">Game Over</h4>
+                        <br />
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">Score:</p>
+                            </div>
+                            <div className="col">
+                                <p>{this.state.score}</p>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <p className="text-right">High Score:</p>
+                            </div>
+                            <div className="col">
+                                <p>{nhs?this.state.score:this.props.highscore[this.props.gameCode]}</p>
+                            </div>
+                        </div>
+                </div>
+            ), [
+                {
+                    type: "primary",
+                    text: "Select Game",
+                    callback: this.props.leaveGame
+                },
+                {
+                    type: "success",
+                    text: "Play Again",
+                    callback: () => {
+                        this.closeModal()
+                        this.init()
+                    }
+                },
+                {
+                    type: "secondary",
+                    text: "Close",
+                    callback: this.closeModal
+                }
+            ])
+        }, 1000)
+        this.props.gameEnd();
+    }
+
+    addScore = (num) => {
+        this.setState({
+            score: this.state.score + 2**num
+        })
+    }
+
+    generateTiles = () => {
+        //console.log("Generate tiles...")
+        if (this.isGameOver) return
 
         let tls = this.state.tiles
 
@@ -75,16 +163,35 @@ export class TwentyFortyEight extends Component {
             this.validCount--
             this.numbers[ri] = rn
             this.numToTile[ri] = uni
-            console.log("+"+ri)
+            //console.log("+"+ri)
             howMany--
-        } while (howMany>0)
+        } while (howMany>0&&this.validCount>0)
 
         this.setState({
             tiles: tls
         })
+
+        if (this.validCount==0) {
+            //check gameover
+            let hasMerge = false;
+            for (let i=0;i<16;i++) {
+                if (i%4!=3&&this.numbers[i]==this.numbers[i+1]) {
+                    hasMerge = true;
+                    break;
+                }
+                if (i<12&&this.numbers[i]==this.numbers[i+4]) {
+                    hasMerge = true;
+                    break;
+                }
+            }
+            if (!hasMerge) {
+                setTimeout(this.gameOver, 1000);
+            }
+        }
     }
 
     move = (dx, dy) => {
+        if (this.isGameOver) return
         let tls = this.state.tiles
         for (let i in tls) {
             if (tls[i].destroyed||tls[i].isMerged) {
@@ -95,6 +202,7 @@ export class TwentyFortyEight extends Component {
             }
         }
         let moved = false
+        let mergedTiles = {}
         for (let i=0;i<4;i++) {
             for (let j=0;j<4;j++) {
                 let k = (dx>0?3-i:i)*4 + (dy>0?3-j:j)
@@ -104,8 +212,8 @@ export class TwentyFortyEight extends Component {
                         for (let m=k;m<16&&m>=0;m+=dx*4) {
                             if (m===k) continue
                             if (this.numbers[m]!==0) {
-                                if (this.numbers[m]===this.numbers[k]) {
-                                    console.log("+"+m+" -"+k)
+                                if (this.numbers[m]===this.numbers[k]&&(!mergedTiles[m])) {
+                                    //console.log("+"+m+" -"+k)
                                     this.numbers[m]++
                                     this.numbers[k] = 0
 
@@ -131,6 +239,9 @@ export class TwentyFortyEight extends Component {
                                     lastOne = -1
 
                                     moved = true
+                                    mergedTiles[m] = true
+
+                                    this.addScore(tls[this.numToTile[m]].n);
                                 }
                                 break
                             }
@@ -141,8 +252,8 @@ export class TwentyFortyEight extends Component {
                         for (let m=k;m>=parseInt(k/4)*4&&m<parseInt(k/4+1)*4;m+=dy) {
                             if (m===k) continue
                             if (this.numbers[m]!==0) {
-                                if (this.numbers[m]===this.numbers[k]) {
-                                    console.log("+"+m+" -"+k)
+                                if (this.numbers[m]===this.numbers[k]&&(!mergedTiles[m])) {
+                                    //console.log("+"+m+" -"+k)
                                     this.numbers[m]++
                                     this.numbers[k] = 0
 
@@ -168,6 +279,9 @@ export class TwentyFortyEight extends Component {
                                     lastOne = -1
 
                                     moved = true
+                                    mergedTiles[m] = true
+
+                                    this.addScore(tls[this.numToTile[m]].n);
                                 }
                                 break
                             }
@@ -175,7 +289,7 @@ export class TwentyFortyEight extends Component {
                         }
                     }
                     if (lastOne!==-1) {
-                        console.log(k+"-->"+lastOne)
+                        //console.log(k+"-->"+lastOne)
                         this.numbers[lastOne] = this.numbers[k]
                         this.numbers[k] = 0
                         this.numToTile[lastOne] = this.numToTile[k]
@@ -210,12 +324,33 @@ export class TwentyFortyEight extends Component {
         this.validCount = 16
         this.numbers = new Array(16).fill(0)
         this.numToTile = new Array(16).fill(-1)
+        this.isGameOver = false
+
+        //load highscore
+        let hs = this.props.highscore[this.props.gameCode]
+        if (hs===null||(typeof hs)!=="number") {
+            this.props.highscoreUpdate({gameCode:this.props.gameCode, score:0})
+        }
 
         //scale game to window size
         let tm = (window.innerWidth - 40)/(tileSize*4+tileMargin*6);
         let dm = (window.innerHeight - 60 - 60 - 40)/(tileSize*4+tileMargin*6);
         this.mainElement.current.style.transform = "scale("+Math.min(tm,dm)+")";
         this.mainElement.current.style.left = "calc( 50% - " + (Math.min(tm,dm)*(tileSize*4+tileMargin*5) / 2) + "px )";
+
+        this.state = {
+            tiles: {},
+            score: 0,
+            modal: {
+                show: false,
+                buttons: []
+            }
+        }
+        this.forceUpdate()
+        
+        this.setState({
+            score: 0
+        })
 
         this.generateTiles()
     }
@@ -255,19 +390,26 @@ export class TwentyFortyEight extends Component {
     render() {
         return (
             <div>
+                <Modal modal={this.state.modal} />
                 <div className="container">
                     <p className="text-center arcade-game-toosmall">Sorry, your screen is too small to play this game.</p>
                 </div>
                 <div className="arcade-2048-outer">
                     <div className="arcade-2048-title">
                         <h4 className="text-center d-flex justify-content-between arcade-2048-title-inner">
-                            <span><button className="btn btn-secondary">Restart</button></span>
+                            <span><button className="btn btn-secondary" onClick={this.init}>Restart</button></span>
                             <span>2048</span>
                             <span>
                                 <button className="btn btn-secondary">Settings</button>
                             </span>
                         </h4>
                         <hr className="arcade-mine-hr" />
+                    </div>
+                    <div className="arcade-2048-sidecol">
+                        <h4>Score</h4>
+                        <p className="arcade-2048-score"> {this.state.score} </p>
+                        <h4>High Score</h4>
+                        <p className="arcade-2048-score"> {this.props.highscore[this.props.gameCode]} </p>
                     </div>
                     <div className="arcade-2048-game" ref={this.mainElement} style={{
                         width: (tileSize*4+tileMargin*6),
