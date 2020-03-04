@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import uuid from 'react-uuid'
 import Modal from '../components/Modal'
+import '../css/Game.2048.css'
 
 const tileColors = ['#3C3A32','#EEE4DA','#EDE0C8','#F2B179','#F59563','#F67C5F','#F65E3B','#EDCF72','#EDCC61','#EDC850','#EDC53F','#EDC22E']
 const tileSize = 100
@@ -26,6 +27,7 @@ class Tile {
         this.number = 2**this.n
         this.color = this.n>=tileColors.length?tileColors[0]:tileColors[this.n]
         this.fontColor = this.n==1?"#776E65":"#F9F6F2"
+        this.fontSize = this.n<10?"3rem":((this.n<14)?"2.2rem":"1.8rem")
     }
 }
 
@@ -422,7 +424,8 @@ export class TwentyFortyEight extends Component {
                                     height: (tileSize+1)+"px",
                                     transform: v.transform,
                                     backgroundColor: v.color,
-                                    color: v.fontColor
+                                    color: v.fontColor,
+                                    fontSize: v.fontSize
                                 }}>
                                     {
                                         v.isMerged?(<div className="arcade-2048-tile-inner">{v.number}</div>):v.number

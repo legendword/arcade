@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import SignInForm from '../components/SignInForm'
 import PlayList from './PlayList'
+import '../css/Play.css'
 
 export class PlayContent extends Component {
 

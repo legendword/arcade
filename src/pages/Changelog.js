@@ -7,7 +7,14 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.7" date="">
+                <Commit id="" ver="0.1.8" date="">
+                    <ul>
+                        <li>2048: Fixed <a href="https://github.com/legendword/arcade/issues/1" target="blank">Issue #1</a>, font size of large numbers (>=1024) is now adjusted to fit the grid.</li>
+                        <li>Experimental button styles in the <i>Overview</i> tab.</li>
+                        <li>Rearranged CSS file layout.</li>
+                    </ul>
+                </Commit>
+                <Commit id="bc891075cedc4d95dcc8443679068f4c9a80bffe" ver="0.1.7" date="Feb. 11, 2020">
                     <ul>
                         <li>2048: Added score display and <i>High Score</i> support.</li>
                         <li>2048: Added Game Over prompt, and <i>Restart</i> button is now functional.</li>

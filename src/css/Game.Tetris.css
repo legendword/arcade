@@ -1,0 +1,62 @@
+
+
+/* Tetris */
+.arcade-tetris-leftButtons {
+    margin-top: 180px;
+    width: 100%;
+  }
+  .arcade-tetris-leftButtons .btn {
+    display: block;
+    margin: auto;
+  }
+  
+  .arcade-tetris-paused {
+    font-size: 50%;
+    opacity: 0.8;
+    color: #fff;
+    margin-left: 10px;
+    background: red;
+    padding: 3px 5px;
+    border-radius: 5px;
+  }
+  
+  .arcade-tetris-paused:empty {
+    background: initial;
+  }
+  
+  .arcade-tetris-nextshape {
+    position: absolute;
+    left: calc( 50% - 45px );
+  }
+  
+  .arcade-tetris-scores {
+    margin-top: 3vh;
+    vertical-align: center;
+    line-height: 3.5rem;
+  }
+  
+  .arcade-tetris-desc {
+    font-size: 1.2rem;
+  }
+  
+  .arcade-tetris-score {
+    font-size: 2rem;
+  }
+  
+  .arcade-tetris-outer {
+    margin-top: 5vh;
+  }
+  
+  .arcade-tetris-game {
+    width: 100%;
+    transform-origin: top left;
+  }
+  
+  .arcade-tetris-row {
+    margin: 0 auto;
+  }
+  
+  .arcade-tetris-tile {
+    position: absolute;
+    border: 1px solid black;
+  }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import SignInForm from '../components/SignInForm'
 import Sidebar from '../components/Sidebar'
 import HomeDashboard from './HomeDashboard'
+import '../css/Home.css'
 
 export class HomeContent extends Component {
     render() {

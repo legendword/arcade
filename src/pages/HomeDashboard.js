@@ -31,7 +31,8 @@ export class HomeDashboard extends Component {
                             </div>
                         </div>
                         <div className="arcade-dashboard-goPlay">
-                            <Link to="/play" className="btn arcade-btn-blue" style={{width:"5rem"}}>Play</Link>
+                            <Link to="/play" className="btn arcade-btn-lgNav">SINGLEPLAYER</Link>
+                            <Link to="/play" className="btn arcade-btn-lgNav">MULTIPLAYER</Link>
                         </div>
                         <h5 style={{marginTop: "max(2vh,10px)",color: "#e48d1f"}}>Legendword Arcade Insiders Beta {packageJSON?packageJSON.version:""}</h5>
                         <p style={{color: "#e48d1f"}}>Submit Issues through <a href="https://github.com/legendword/arcade/issues">the GitHub Repo</a>.</p>

@@ -1,0 +1,75 @@
+/* Home -> Container Scrolls */
+.arcade-changelog-container, .arcade-dashboard-container {
+    overflow: auto;
+    height: calc(100vh - 100px);
+}
+/* Home -> Dashboard */
+.arcade-dashboard-title-small {
+    font-size: 60%;
+}
+
+.arcade-dashboard-goPlay {
+    margin-top: max(2vh, 10px);
+    margin-bottom: max(2vh, 10px);
+    display: flex;
+    justify-content: space-around;
+}
+
+.arcade-dashboard-goPlay>* {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* Home -> Highscore */
+.arcade-highscore-outer {
+    padding: 0 max(2vw, 10px);
+}
+  
+.arcade-highscore-row {
+    padding: 10px 0;
+    border-top: 1px solid #e8e8e8;
+}
+  
+.arcade-highscore-row:first-of-type {
+    border-top: none;
+}
+  
+/* Home -> Home Outer */
+.arcade-home-content {
+    display: flex;
+    padding-top: 20px;
+}
+  
+.arcade-home-content .arcade-home-sidebar {
+    flex: 1;
+}
+  
+.arcade-home-content .arcade-home-dashboard {
+    flex: 4;
+}
+
+/* Home -> Sidebar */
+.arcade-sidebar-nav {
+    border-right: 1px solid #dee2e6;
+    margin-left: 10px;
+    width: 20vw;
+    font-weight: 500;
+    height: calc( 100vh - 80px );
+}
+  
+.arcade-sidebar-nav .nav-item {
+    margin-right: -1px;
+}
+  
+.arcade-sidebar-nav .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-bottom-left-radius: .25rem;
+}
+  
+.arcade-sidebar-nav .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #fff #dee2e6 #dee2e6;
+}
+  

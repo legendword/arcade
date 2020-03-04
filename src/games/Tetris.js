@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Modal from '../components/Modal'
+import '../css/Game.Tetris.css'
 
 class CurrentShape {
     constructor(props) {

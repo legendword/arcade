@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import flagImageFile from './resources/flag.png'
 import mineImageFile from './resources/mine.png'
 import Modal from '../components/Modal'
+import '../css/Game.MineSweeper.css'
 
 const flagImage = <img className="arcade-mine-flagImage" src={flagImageFile} alt="a flag" />
 const mineImage = <img className="arcade-mine-mineImage" src={mineImageFile} alt="a mine" />

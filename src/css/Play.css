@@ -1,0 +1,38 @@
+
+/* Play -> In Game */
+.arcade-game-toosmall {
+  display: none;
+  color: red;
+}
+
+@media (max-width: 768px) {
+  .arcade-game-toosmall {
+    display: block;
+  }
+}
+
+/* Play -> Game Select */
+.arcade-list-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.5s;
+  }
+  
+  .arcade-list-card {
+    max-width: 300px;
+    margin: auto;
+    transition: transform 0.5s;
+    cursor: pointer;
+  }
+  
+  .arcade-play-list {
+    margin-top: max(3vh, 20px);
+    overflow: visible;
+  }
+  
+  /* Play -> Game Outer */
+  .arcade-play-content {
+    padding-top: max(5vh, 30px);
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+  

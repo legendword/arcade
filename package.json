@@ -1,6 +1,6 @@
 {
   "name": "arcade",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "homepage": "http://legendword.com/arcade",
   "private": true,
   "dependencies": {
