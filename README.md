@@ -16,4 +16,8 @@ An online platform providing several mini-games.
 
 Legendword Arcade uses **React**.
 
+<<<<<<< HEAD
 Run `npm start` to start a live local development server.
+=======
+Run `npm start` to start a live local development server.
+>>>>>>> 356b9d531d64db761e45a2b9f6a58e2dd7f1d1fe
