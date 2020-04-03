@@ -8,16 +8,21 @@
     font-size: 60%;
 }
 
-.arcade-dashboard-goPlay {
-    margin-top: max(2vh, 10px);
-    margin-bottom: max(2vh, 10px);
-    display: flex;
-    justify-content: space-around;
+.arcade-dashboard-userlvl {
+    margin-bottom: 1rem;
 }
 
 .arcade-dashboard-goPlay>* {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 50%;
+}
+
+.arcade-dashboard-card {
+    padding: 2rem;
+}
+.arcade-dashboard-card:not(:last-child) {
+    margin-bottom: max(2vh, 10px);
 }
 
 /* Home -> Highscore */

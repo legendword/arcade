@@ -10,7 +10,7 @@ export class HomeContent extends Component {
             return (
                 <div className="arcade-home-content">
                     <Sidebar className="arcade-home-sidebar" />
-                    <HomeDashboard className="arcade-home-dashboard" user={this.props.user} highscore={this.props.highscore} />
+                    <HomeDashboard className="arcade-home-dashboard" guestMode={this.props.guestMode} user={this.props.user} highscore={this.props.highscore} />
                 </div>
             )
         }
@@ -18,7 +18,7 @@ export class HomeContent extends Component {
             return (
                 <div className="container" style={{marginTop:"max(10vh,30px)"}}>
                     <h2 className="text-center" style={{marginBottom:"max(5vh,20px)"}}>Welcome to Legendword Arcade</h2>
-                    <SignInForm signIn={this.props.signInEvent} />
+                    <SignInForm playAsGuest={this.props.playAsGuest} />
                 </div>
             )
         }

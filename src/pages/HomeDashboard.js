@@ -3,8 +3,21 @@ import { Switch, Route, Redirect, Link } from 'react-router-dom'
 import Changelog from './Changelog'
 import packageJSON from '../../package.json'
 import Highscores from '../components/Highscores'
+import $ from 'jquery'
 
 export class HomeDashboard extends Component {
+
+    loginAction = () => {
+        if (this.props.guestMode) {
+            window.location.href = "http://legendword.com/login?from=http://legendword.com/arcade";
+        }
+        else {
+            $.post("http://legendword.com/user_system/logout.php",{},(t)=>{
+                window.location.reload();
+            });
+        }
+    }
+
     render() {
         return (
             <Switch>
@@ -23,28 +36,33 @@ export class HomeDashboard extends Component {
                 </Route>
                 <Route path="/home/overview">
                     <div className="container arcade-dashboard-container">
-                        <h2 className="arcade-dashboard-title">{this.props.user.name}</h2>
-                        <div className="arcade-dashboard-userlvl">
-                            <span>LV. {this.props.user.level} - {this.props.user.levelexp}/{this.props.user.levelupexp}</span>
-                            <div className="progress" style={{height:"2px"}}>
-                                <div className="progress-bar" style={{width:(this.props.user.levelexp/this.props.user.levelupexp)*100+"%"}}></div>
+                        <div className="row">
+                            <div className="col">
+                                <div className="card arcade-dashboard-card">
+                                    <h3 className="arcade-dashboard-title">{this.props.user.name}</h3>
+                                    <div className="arcade-dashboard-userlvl">
+                                        <span>LV. {this.props.user.level} - {this.props.user.levelexp}/{this.props.user.levelupexp}</span>
+                                        <div className="progress" style={{height:"2px"}}>
+                                            <div className="progress-bar" style={{width:(this.props.user.levelexp/this.props.user.levelupexp)*100+"%"}}></div>
+                                        </div>
+                                    </div>
+                                    <div className="arcade-dashboard-useraction">
+                                        <button className="btn arcade-btn-blue" onClick={this.loginAction}>{this.props.guestMode?"Sign In":"Sign Out"}</button>
+                                    </div>
+                                </div>
+                                <div className="arcade-dashboard-goPlay card arcade-dashboard-card">
+                                    <Link to="/play" className="btn arcade-btn-lgNav">SINGLEPLAYER</Link>
+                                    <Link to="/play" className="btn arcade-btn-lgNav">MULTIPLAYER</Link>
+                                </div>
                             </div>
-                        </div>
-                        <div className="arcade-dashboard-goPlay">
-                            <Link to="/play" className="btn arcade-btn-lgNav">SINGLEPLAYER</Link>
-                            <Link to="/play" className="btn arcade-btn-lgNav">MULTIPLAYER</Link>
-                        </div>
-                        <h5 style={{marginTop: "max(2vh,10px)",color: "#e48d1f"}}>Legendword Arcade Insiders Beta {packageJSON?packageJSON.version:""}</h5>
-                        <p style={{color: "#e48d1f"}}>Submit Issues through <a href="https://github.com/legendword/arcade/issues">the GitHub Repo</a>.</p>
-                        <div className="row" style={{marginTop: "max(4vh,20px)"}}>
-                            <div className="col-md-7">
-                                <div className="arcade-dashboard-highscore">
+                            <div className="col">
+                                <h5 style={{marginTop: "max(2vh,10px)",color: "#e48d1f"}}>Legendword Arcade Insiders Beta {packageJSON?packageJSON.version:""}</h5>
+                                <p style={{color: "#e48d1f"}}>Submit Issues through <a href="https://github.com/legendword/arcade/issues">the GitHub Repo</a>.</p>
+                                <div className="arcade-dashboard-highscore card arcade-dashboard-card">
                                     <h4>High Scores</h4>
                                     <Highscores highscore={this.props.highscore} />
                                 </div>
-                            </div>
-                            <div className="col-md-5">
-                                <div className="arcade-dashboard-friends">
+                                <div className="arcade-dashboard-friends card arcade-dashboard-card">
                                     <h4>Friends</h4>
                                     <p>No Records</p>
                                 </div>

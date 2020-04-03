@@ -4,12 +4,14 @@ import Header from './components/Header';
 import HomeContent from './pages/HomeContent';
 import PlayContent from './pages/PlayContent';
 import './App.css'
+import $ from 'jquery'  
 
 export class App extends React.Component {
   state = {
     loggedIn: true,
+    guestMode: false,
     user: {
-      name: "Legendword Insiders",
+      name: "Guest",
       level: 1,
       levelexp: 0,
       levelupexp: 100
@@ -35,8 +37,11 @@ export class App extends React.Component {
     }
   }
 
-  signInEvent = (e) => {
-    e.preventDefault()
+  playAsGuest = () => {
+    this.setState({
+      loggedIn: true,
+      guestMode: true
+    });
   }
 
   gameEnd = () => {
@@ -68,7 +73,23 @@ export class App extends React.Component {
     })
   }
 
+  fetchUserInfo = () => {
+    $.post("http://localhost/arcade-backend/userinfo.php",{},(t) => {
+      let s = JSON.parse(t);
+      console.log(s);
+      if (s.is_online==false) {
+        this.setState({
+          loggedIn: false
+        })
+      }
+      else {
+
+      }
+    });
+  }
+
   componentDidMount() {
+    this.fetchUserInfo()
     this.fetchHighscore()
   }
 
@@ -79,10 +100,10 @@ export class App extends React.Component {
           <Header inGame={this.state.inGame} leaveGame={this.leaveGame} />
           <Switch>
             <Route path="/play">
-              <PlayContent loggedIn={this.state.loggedIn} user={this.state.user} highscore={this.state.highscore} highscoreUpdate={this.highscoreUpdate} signInEvent={this.signInEvent} inGame={this.state.inGame} currentGame={this.state.currentGame} gameSelect={this.gameSelect} leaveGame={this.leaveGame} gameEnd={this.gameEnd} />
+              <PlayContent loggedIn={this.state.loggedIn} user={this.state.user} highscore={this.state.highscore} highscoreUpdate={this.highscoreUpdate} playAsGuest={this.playAsGuest} inGame={this.state.inGame} currentGame={this.state.currentGame} gameSelect={this.gameSelect} leaveGame={this.leaveGame} gameEnd={this.gameEnd} />
             </Route>
             <Route path="/home">
-              <HomeContent loggedIn={this.state.loggedIn} user={this.state.user} highscore={this.state.highscore} signInEvent={this.signInEvent} />
+              <HomeContent loggedIn={this.state.loggedIn} guestMode={this.state.guestMode} user={this.state.user} highscore={this.state.highscore} playAsGuest={this.playAsGuest} />
             </Route>
             <Route path="/">
               <Redirect to="/home/overview" />

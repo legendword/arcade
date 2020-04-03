@@ -7,7 +7,14 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.8" date="">
+                <Commit id="" ver="0.1.9" date="">
+                    <ul>
+                        <li>Sign-In page is remade. Since the login/register system is linked to Legendword Account, I will just use the login/register page from LAccount.</li>
+                        <li>New experimental button styles in <i>Overview</i>.</li>
+                        <li>Rearranged elements in <i>Overview</i> by using <code>cards</code> to better distinguish different parts.</li>
+                    </ul>
+                </Commit>
+                <Commit id="714a3b44163ec28f078cd73b06b9d212c32725f8" ver="0.1.8" date="Mar. 3, 2020">
                     <ul>
                         <li>2048: Fixed <a href="https://github.com/legendword/arcade/issues/1" target="blank">Issue #1</a>, font size of large numbers (>=1024) is now adjusted to fit the grid.</li>
                         <li>Experimental button styles in the <i>Overview</i> tab.</li>
