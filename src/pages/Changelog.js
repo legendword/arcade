@@ -7,7 +7,17 @@ export class Changelog extends Component {
             <div className="container arcade-changelog-container">
                 <h2>Changelog</h2>
                 <hr />
-                <Commit id="" ver="0.1.9" date="">
+                <Commit id="" ver="0.2.0" date="">
+                    <p style={{paddingLeft: "1rem"}}>Welcome to v0.2.x! Starting from this version, player data will be linked to the database. More online systems are coming to this wonderful arcade!</p>
+                    <ul>
+                        <li>Although this platform is now linked to Legendword Accounts, you can still play without an account. Just click "Play as Guest" when you see the login/register prompt.</li>
+                        <li>In Play as Guest, or <b>Guest Mode</b>, your high scores are saved locally, which means you can still break your own record when playing without an account.</li>
+                        <li>If you're logged in, your <i>Highscores</i> will be stored in the database. Even if you use a different browser or device, as long as you're signed in using the same account, your highscores will be synchronized.</li>
+                        <li>Fixed some bugs related to signing in and out.</li>
+                        <li>Improved user action buttons in <i>Overview</i></li>
+                    </ul>
+                </Commit>
+                <Commit id="cd87e5c5b709b3e975c0d3710c1ddb27f35719e7" ver="0.1.9" date="Apr. 3, 2020">
                     <ul>
                         <li>Sign-In page is remade. Since the login/register system is linked to Legendword Account, I will just use the login/register page from LAccount.</li>
                         <li>New experimental button styles in <i>Overview</i>.</li>

@@ -6,6 +6,23 @@ body {
   padding: 0 0.5rem !important;
 }
 
+/* User Levels */
+.usergroup-0::after {
+	content: "Administrator";
+}
+.usergroup-1::after {
+	content: "Member";
+}
+.usergroup-2::after {
+	content: "Early User";
+}
+:root {
+	--usergroup-0: #9f17b8;
+	--usergroup-1: grey;
+	--usergroup-2: #17a2b8;
+}
+
+
 /* General -> Header */
 .arcade-header-nav {
   padding: 0;

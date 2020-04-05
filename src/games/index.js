@@ -30,6 +30,7 @@ const gameIndex = [
 ]
 
 const findName = (gameCode) => {
+    gameCode = parseInt(gameCode)
     return gameIndex[gameCode-1].name
 }
 

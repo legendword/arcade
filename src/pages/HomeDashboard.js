@@ -13,9 +13,13 @@ export class HomeDashboard extends Component {
         }
         else {
             $.post("http://legendword.com/user_system/logout.php",{},(t)=>{
-                window.location.reload();
+                this.props.logOut()
             });
         }
+    }
+
+    newAccount = () => {
+        window.location.href = "http://legendword.com/register"
     }
 
     render() {
@@ -47,7 +51,10 @@ export class HomeDashboard extends Component {
                                         </div>
                                     </div>
                                     <div className="arcade-dashboard-useraction">
-                                        <button className="btn arcade-btn-blue" onClick={this.loginAction}>{this.props.guestMode?"Sign In":"Sign Out"}</button>
+                                        <button className="btn arcade-btn-blue" style={{marginRight: "1rem", marginBottom: "0.5rem"}} onClick={this.loginAction}>{this.props.guestMode?"Sign In":"Sign Out"}</button>
+                                        {
+                                            this.props.guestMode ? (<button className="btn arcade-btn-blue" style={{marginBottom: "0.5rem"}} onClick={this.newAccount}>Create Account</button>) : null
+                                        }
                                     </div>
                                 </div>
                                 <div className="arcade-dashboard-goPlay card arcade-dashboard-card">
