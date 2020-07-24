@@ -1,3 +1,7 @@
+.arcade-play-outer {
+  height: calc(100% - 56px);
+  background: var(--main-light);
+}
 
 /* Play -> In Game */
 .arcade-game-toosmall {
@@ -13,26 +17,25 @@
 
 /* Play -> Game Select */
 .arcade-list-card:hover {
-    transform: scale(1.05);
-    transition: transform 0.5s;
-  }
-  
-  .arcade-list-card {
-    max-width: 300px;
-    margin: auto;
-    transition: transform 0.5s;
-    cursor: pointer;
-  }
-  
-  .arcade-play-list {
-    margin-top: max(3vh, 20px);
-    overflow: visible;
-  }
-  
-  /* Play -> Game Outer */
-  .arcade-play-content {
-    padding-top: max(5vh, 30px);
-    padding-left: 5vw;
-    padding-right: 5vw;
-  }
-  
+  transform: scale(1.05);
+  transition: transform 0.5s;
+}
+
+.arcade-list-card {
+  max-width: 300px;
+  margin: auto;
+  transition: transform 0.5s;
+  cursor: pointer;
+}
+
+.arcade-play-list {
+  margin-top: max(3vh, 20px);
+  overflow: visible;
+}
+
+/* Play -> Game Outer */
+.arcade-play-content {
+  padding-top: max(5vh, 30px);
+  padding-left: 5vw;
+  padding-right: 5vw;
+}

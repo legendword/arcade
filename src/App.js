@@ -105,6 +105,10 @@ export class App extends React.Component {
   }
 
   fetchUserInfo = () => {
+    if (window.location.host=="localhost:3000"&&window.location.search!=="?production") {
+      this.playAsGuest();
+      return;
+    }
     $.post("http://legendword.com/arcade-backend/userinfo.php",{},(t) => {
       let s = JSON.parse(t);
       console.log(s);

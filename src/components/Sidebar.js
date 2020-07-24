@@ -10,13 +10,13 @@ export class Sidebar extends Component {
                         <NavLink className="nav-link" to="/home/overview" activeClassName="nav-link active">Overview</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" style={{color:"#e48d1f"}} to="/home/changelog" activeClassName="nav-link active">Changelog</NavLink>
-                    </li>
-                    <li className="nav-item">
                         <NavLink className="nav-link" to="/home/progress" activeClassName="nav-link active">Progress</NavLink>
                     </li>
                     <li className="nav-item">
                         <NavLink className="nav-link" to="/home/friends" activeClassName="nav-link active">Friends</NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/home/changelog" activeClassName="nav-link active">Changelog</NavLink>
                     </li>
                 </ul>
             </div>

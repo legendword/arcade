@@ -1,0 +1,3 @@
+---
+components/Highscores was used in Home/Overview but removed; need to change the styling and fit the new theme
+---

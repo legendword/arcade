@@ -1,0 +1,27 @@
+.arcade-progress-row {
+    height: 210px;
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.arcade-progress-block {
+    height: 200px;
+    width: 180px;
+    margin-right: 20px;
+    border: 2px solid var(--shade-dark);
+}
+
+.arcade-progress-block-title {
+    font-weight: 600;
+    font-size: 18px;
+    background: var(--shade-dark);
+    padding: 10px;
+    height: 45px;
+}
+
+.arcade-progress-block-content {
+    padding: 20px;
+    height: 155px;
+}

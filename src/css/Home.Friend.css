@@ -1,0 +1,84 @@
+.arcade-friend-outer {
+    display: flex;
+    margin-top: 10px;
+    height: 100%;
+}
+
+.arcade-friend-detail-outer {
+    height: 100%;
+    flex: 2;
+    padding: 0 1rem;
+}
+
+.arcade-friend-list-outer {
+    height: calc(100% - 25px);
+    /* width: max( 120px, 25% ); */
+    flex: 1;
+    background: var(--btn-dark);
+}
+
+.arcade-friend-list-title {
+    margin: 0;
+    padding: .5rem;
+    background: var(--main-dark);
+    color: var(--text-light);
+    text-align: center;
+}
+
+.arcade-friend-list-group-name {
+    background: var(--main-dark);
+    color: var(--text-light);
+    padding: 5px 5px;
+}
+
+.arcade-friend-list-group-name:hover {
+    background: var(--dark-0);
+}
+
+.arcade-friend-list-group-name, .arcade-friend-list-group-name>* {
+    line-height: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.arcade-friend-list-group-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.arcade-friend-list-group-arr {
+    width: 20px;
+    height: 20px;
+    margin-right: .25rem;
+}
+
+.arcade-friend-list-group {
+    background: var(--btn-dark);
+    color: var(--text-light);
+}
+
+.arcade-friend-list-item {
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 10px 10px 10px 25px;
+    height: 50px;
+    border-bottom: 1px solid grey;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.arcade-friend-list-item:last-child {
+    border-bottom: none;
+}
+
+.arcade-friend-list-item:hover {
+    background-color: var(--shade-dark);
+    color: var(--text-dark);
+    transition: background-color 0.1s ease-in-out;
+}
+
+.arcade-friend-list-item-status {
+    font-size: 0.8rem;
+    line-height: 2rem;
+}

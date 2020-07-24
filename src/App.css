@@ -1,9 +1,30 @@
 /* General */
 body {
   overflow: hidden;
+  background: var(--main-light);
 }
 .small-padding {
   padding: 0 0.5rem !important;
+}
+.App {
+  height: 100%;
+}
+.arcade-text-muted {
+  color: #c6c6c6;
+}
+
+/* Color Theme */
+:root {
+  --main-dark: #535b8d;
+  --main-light: #eaf2ff;
+  --shade-dark: #b1caf8;
+  --shade-light: #DEE7F7;
+  --text-dark: #4D5382;
+  --text-light: #ffffff;
+  --shade-blue: #8AAAE5;
+  --btn-dark: #656CA4;
+  --btn-light: #7E85B4;
+  --dark-0: #5B629A;
 }
 
 /* User Levels */
@@ -26,24 +47,39 @@ body {
 /* General -> Header */
 .arcade-header-nav {
   padding: 0;
+  display: flex;
+  background-color: var(--main-dark);
+  /* background-image: linear-gradient(to right,#57ccf8de 40%,#57f8e9de 100%) */
 }
 
 .arcade-header-brand {
   padding: 0.8125rem 0 0.8125rem 1rem;
+  margin-right: 0.85rem !important;
+  color: var(--text-light) !important;
+  flex: 1;
+}
+
+.arcade-header-content {
+  flex: 4;
 }
 
 .arcade-header-link {
   padding: 1rem 0.75rem !important;
   transition: background-color 0.5s;
+  color: var(--text-light) !important;
 }
 
 .arcade-header-link:hover, .arcade-header-link:active {
-  background-color: #b2edff96;
-  transition: background-color 0.5s;
+  /* background-color: #b2edff96; */
+  background-color: var(--shade-light);
+  transition: background-color,color 0.5s;
+  color: var(--text-dark) !important;
 }
 
 .arcade-header-link.active {
-  background-color: #87f4ff66;
+  /* background-color: #87f4ff66; */
+  background-color: var(--main-light);
+  color: var(--text-dark) !important;
 }
 
 /* General -> Sign In */
@@ -62,8 +98,9 @@ body {
 .signinBtnFull {
   width: 80%;
   margin: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 1rem !important;
   display: block;
+  font-size: 1.5rem !important;
 }
 .signinColRight {
   border-left: 1px solid #d5d5d5;
@@ -89,49 +126,85 @@ body {
 }
 
 /* General -> Buttons */
-.arcade-btn-blue {
-  color: #fff;
-  background-color: #57ccf8;
-  border-color: #57ccf8;
+.arcade-btn {
+  display: inline-block;
+  text-align: center;
+  border: 1px solid transparent;
+  padding: 0.4rem 2.5rem;
+  font-size: 1rem;
+  border-radius: 0.2rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  cursor: pointer;
+  margin: 0 0.25rem;
 }
 
-.arcade-btn-blue:hover {
-  color: #fff;
-  background-color: #57c4f8;
-  border-color: #57c4f8;
+.arcade-btn-block {
+  display: block;
+  width: 100%;
+  text-align: center;
+  border: 1px solid transparent;
+  padding: 0.4rem 0;
+  font-size: 1rem;
+  border-radius: 0.2rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  cursor: pointer;
+  margin: 0.5rem 0;
+}
+
+.arcade-btn-block:hover, .arcade-btn-block:active {
+  border: 1px solid transparent;
+}
+
+.btn-dark {
+  background: var(--btn-dark);
+  color: var(--text-light);
+}
+
+.btn-dark:hover {
+  background: var(--main-dark);
+}
+
+.btn-light {
+  background: var(--shade-dark);
+  color: var(--text-dark);
+}
+
+.btn-light:hover {
+  background: var(--shade-blue);
+  color: var(--text-light);
 }
 
 .arcade-btn-lgNav {
-  width: 100%;
-  background: #fff;
-  height: 4rem;
+  text-decoration: none;
+  display: block;
+  width: 60%;
+  margin: 2rem auto;
   line-height: 4rem;
-  vertical-align: middle;
-  border-left: 2px solid #007bff;
+  border-left: 2px solid var(--main-dark);
   border-radius: 0;
   text-align: left;
-  padding: 0 1rem;
+  padding: 1rem 1rem;
   font-size: 1.3rem;
   font-weight: 700;
   background-repeat: no-repeat;
-  color: #007bff;
+  color: var(--text-dark);
+  letter-spacing: .1rem;
 }
 
 .arcade-btn-lgNav:hover {
-  color: #007bff;
-  border-left-color: #e48d1f;
-  background-image: linear-gradient(90deg, #e48d1f85 0%, #e48d1f85 20%, #fff 70%);
-  animation: gradientFill 500ms ease-out;
+  text-decoration: none;
+  color: var(--text-dark);
+  border-left-color: var(--btn-light);
+  background-image: linear-gradient(90deg, var(--shade-dark) 0%, var(--shade-dark) 5%, transparent 30%);
+  animation: gradientFill 0.2s ease-out;
   animation-fill-mode: forwards;
 }
 
 @keyframes gradientFill {
   0% {
     background-size: 0%;
-    text-shadow: none;
   }
   100% {
     background-size: 100%;
-    text-shadow: 0 0 15px #e48d1f50, 0 0 10px #e48d1f50;
   }
 }

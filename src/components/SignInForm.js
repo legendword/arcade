@@ -15,9 +15,10 @@ export class SignInForm extends Component {
     render() {
         return (
             <div className="signinBox">
-                <button className="btn arcade-btn-blue signinBtnFull" onClick={this.signIn}>Sign In</button>
-                <button className="btn arcade-btn-blue signinBtnFull" onClick={this.signUp}>New Account</button>
-                <button className="btn arcade-btn-blue signinBtnFull" onClick={this.props.playAsGuest}>Play as Guest</button>
+                <button className="signinBtnFull arcade-btn-block btn-dark" onClick={this.signIn}>Sign In</button>
+                <button className="signinBtnFull arcade-btn-block btn-dark" onClick={this.signUp}>New Account</button>
+                <hr style={{margin:"1.5rem 0"}} />
+                <button className="signinBtnFull arcade-btn-block btn-light" onClick={this.props.playAsGuest}>Play as Guest</button>
             </div>
         )
     }

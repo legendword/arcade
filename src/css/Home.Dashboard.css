@@ -1,0 +1,37 @@
+.arcade-dashboard-container {
+    overflow: auto;
+    height: 100%;
+    padding: 0 15px;
+}
+
+.arcade-dashboard-main {
+    padding-top: 10px;
+    height: 100%;
+    background: var(--main-light);
+}
+
+.arcade-dashboard-side {
+    padding-top: 10px;
+    height: 100%;
+    background: var(--shade-light);
+}
+
+.arcade-dashboard-title-small {
+    font-size: 60%;
+}
+
+.arcade-dashboard-userlvl {
+    margin-bottom: 1rem;
+}
+
+.arcade-dashboard-goPlay {
+    margin-top: 2rem;
+}
+
+.arcade-dashboard-card {
+    padding: 2rem;
+    background: transparent;
+}
+.arcade-dashboard-card:not(:last-child) {
+    margin-bottom: max(2vh, 10px);
+}

@@ -17,7 +17,7 @@ class CurrentShape {
         let self = ref.self
         for (let i of this.shape.content[this.flip]) {
             if (self.isInBorder(this.x+i.x,this.y+i.y)){
-                tls[this.y+i.y][this.x+i.x].color = "#fff"
+                tls[this.y+i.y][this.x+i.x].color = "var(--main-light)"
                 tls[this.y+i.y][this.x+i.x].hasBlock = false
                 tls[this.y+i.y][this.x+i.x].current = false
             }
@@ -53,7 +53,7 @@ class CurrentShape {
             //remove old pre
             for (let i of this.shape.content[this.flip]) {
                 if (self.isInBorder(this.preX+i.x,this.preY+i.y) && !tls[this.preY+i.y][this.preX+i.x].current){
-                    tls[this.preY+i.y][this.preX+i.x].color = "#fff"
+                    tls[this.preY+i.y][this.preX+i.x].color = "var(--main-light)"
                     tls[this.preY+i.y][this.preX+i.x].hasBlock = false
                     tls[this.preY+i.y][this.preX+i.x].current = false
                 }
@@ -92,7 +92,7 @@ class Tile {
         this.reset()
     }
     reset = () => {
-        this.color = "#fff";
+        this.color = "var(--main-light)";
         this.hasBlock = false;
         this.current = false;
     }

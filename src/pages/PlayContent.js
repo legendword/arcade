@@ -10,14 +10,14 @@ export class PlayContent extends Component {
             if (this.props.currentGame) {
                 const Game = this.props.currentGame.component
                 return (
-                    <div>
+                    <div className="arcade-play-outer">
                         <Game gameCode={this.props.currentGame.gameCode} leaveGame={this.props.leaveGame} gameEnd={this.props.gameEnd} highscore={this.props.highscore} highscoreUpdate={this.props.highscoreUpdate} />
                     </div>
                 )
             }
             else {
                 return (
-                    <div>
+                    <div className="arcade-play-outer">
                         <PlayList gameSelect={this.props.gameSelect} />
                     </div>
                 )
