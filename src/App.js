@@ -78,76 +78,16 @@ export class App extends React.Component {
   }
 
   highscoreUpdate = (w) => {
-    if (this.state.guestMode) {
-      let hs = this.state.highscore
-      hs[w.gameCode] = w.score
-      window.localStorage.setItem("arcade-highscore", JSON.stringify(hs))
-      this.setState({
-        highscore: hs
-      })
-    }
-    else {
-      $.post("http://legendword.com/arcade-backend/highscore.php",{action:"set",game:w.gameCode,score:w.score}, (t) => {
-        let s = JSON.parse(t);
-        console.log(s);
-        if (s.error) {
-          window.alert("Highscore Upload Failed:\n"+s.message);
-        }
-        else {
-          let hs = this.state.highscore
-          hs[w.gameCode] = w.score;
-          this.setState({
-            highscore: hs
-          })
-        }
-      })
-    }
+    let hs = this.state.highscore
+    hs[w.gameCode] = w.score
+    window.localStorage.setItem("arcade-highscore", JSON.stringify(hs))
+    this.setState({
+      highscore: hs
+    })
   }
 
   fetchUserInfo = () => {
-    if (window.location.host=="localhost:3000"&&window.location.search!=="?production") {
-      this.playAsGuest();
-      return;
-    }
-    $.post("http://legendword.com/arcade-backend/userinfo.php",{},(t) => {
-      let s = JSON.parse(t);
-      console.log(s);
-      if (s.is_online==false) {
-        this.setState({
-          loggedIn: false
-        })
-      }
-      else {
-        this.setState({
-          loggedIn: true,
-          guestMode: false,
-          user: {
-            uid: s.uid,
-            name: s.name,
-            group: s.group,
-            experience: s.experience | 0
-          }
-        });
-        this.fetchHighscore();
-      }
-    });
-  }
-
-  fetchHighscore = () => {
-    $.post("http://legendword.com/arcade-backend/highscore.php",{action:"getall"},(t) => {
-      let s = JSON.parse(t);
-      console.log(s);
-      if (s.error) {
-        console.log("Highscore Fetch failed:");
-        console.error(s.message);
-      }
-      else {
-        delete s.error;
-        this.setState({
-          highscore: s
-        })
-      }
-    })
+    this.playAsGuest();
   }
 
   logOut = () => {

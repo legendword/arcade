@@ -13,9 +13,6 @@ export class Sidebar extends Component {
                         <NavLink className="nav-link" to="/home/progress" activeClassName="nav-link active">Progress</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/home/friends" activeClassName="nav-link active">Friends</NavLink>
-                    </li>
-                    <li className="nav-item">
                         <NavLink className="nav-link" to="/home/changelog" activeClassName="nav-link active">Changelog</NavLink>
                     </li>
                 </ul>

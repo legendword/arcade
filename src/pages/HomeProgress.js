@@ -7,9 +7,7 @@ export class HomeProgress extends Component {
 
     render() {
         return (
-            <div className="container" style={{marginTop:"10px"}}>
-                <h4 className="text-muted">Your Rankings</h4>
-                <p>Ranking System Coming Soon!</p>
+            <div className="container" style={{marginTop:"40px"}}>
                 <h4 className="text-muted">Individual Game Progress</h4>
                 <div className="arcade-progress-row">
                     {

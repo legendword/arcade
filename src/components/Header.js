@@ -24,7 +24,7 @@ export class Header extends Component {
             <div className="container-fluid" style={{paddingTop:"56px"}}>
                 <nav className="arcade-header-nav navbar lnav fixed-top navbar-expand-lg navbar-light">
 
-                    <a className="arcade-header-brand navbar-brand" href="http://legendword.com/arcade">Legendword Arcade</a>
+                    <a className="arcade-header-brand navbar-brand" href="https://legendword.com/archive/arcade">Legendword Arcade</a>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>

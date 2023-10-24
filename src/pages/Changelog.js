@@ -10,6 +10,7 @@ export class Changelog extends Component {
                 <div className="arcade-changelog-content">
                     <Commit id="" ver="0.2.1" date="">
                         <ul>
+                            <li style={{fontWeight: "bold"}}>Online, Friends, and Log In functionalities have been removed; only local singleplayer games are kept. To play online games, visit the new <a href="https://games.legendword.com/">Legendword Games</a> platform.</li>
                             <li>Massive changes has been made to the theme. Originally, the theme color is blue/light blue; these colors are too bright. Also, the old look includes too much white. The new theme has purple as the primary color and very light blue (almost white) as the secondary color.</li>
                             <li>New button styles (to fit the new theme).</li>
                             <li>New header! No longer a gradient background as it always used to be.</li>

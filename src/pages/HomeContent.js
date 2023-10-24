@@ -13,17 +13,17 @@ export class HomeContent extends Component {
 
     loginAction = () => {
         if (this.props.guestMode) {
-            window.location.href = "http://legendword.com/login?from=http://legendword.com/arcade";
+            window.location.href = "https://legendword.com/login?from=http://legendword.com/arcade";
         }
         else {
-            $.post("http://legendword.com/user_system/logout.php",{},(t)=>{
+            $.post("https://legendword.com/user_system/logout.php",{},(t)=>{
                 this.props.logOut()
             });
         }
     }
 
     newAccount = () => {
-        window.location.href = "http://legendword.com/register"
+        window.location.href = "https://legendword.com/register"
     }
 
     render() {
@@ -35,9 +35,6 @@ export class HomeContent extends Component {
                         <Switch>
                             <Route path="/home/changelog">
                                 <Changelog />
-                            </Route>
-                            <Route path="/home/friends">
-                                <HomeFriends />
                             </Route>
                             <Route path="/home/progress">
                                 <HomeProgress highscore={this.props.highscore} />

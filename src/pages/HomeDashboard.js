@@ -10,33 +10,12 @@ export class HomeDashboard extends Component {
         return (
             <div className="arcade-dashboard-container">
                 <div className="row" style={{height:"100%"}}>
-                    <div className="col-8 arcade-dashboard-main">
+                    <div className="col-12 arcade-dashboard-main">
                         <h4 style={{marginTop: "max(2vh,10px)"}}>Legendword Arcade Insiders Beta {packageJSON?packageJSON.version:""}</h4>
                         <p>Submit Issues through <a href="https://github.com/legendword/arcade/issues">the GitHub Repo</a>.</p>
+                        <p>Note: Legendword Arcade is now in archive mode. No new games / features will be added. Existing singleplayer games are kept and still available to play. To play multiplayer games, check out <a href="https://games.legendword.com/">Legendword Games</a>.</p>
                         <div className="arcade-dashboard-goPlay">
-                            <Link to="/play" className="arcade-btn-lgNav">SINGLEPLAYER</Link>
-                            <Link to="/play" className="arcade-btn-lgNav">MULTIPLAYER (upcoming)</Link>
-                        </div>
-                    </div>
-                    <div className="col arcade-dashboard-side">
-                        <div className="arcade-dashboard-card">
-                            <h3 className="arcade-dashboard-title">{this.props.user.name}</h3>
-                            <div className="arcade-dashboard-userlvl">
-                                <span>LV. {this.props.user.level} - {this.props.user.levelexp}/{this.props.user.levelupexp}</span>
-                                <div className="progress" style={{height:"2px"}}>
-                                    <div className="progress-bar" style={{width:(this.props.user.levelexp/this.props.user.levelupexp)*100+"%"}}></div>
-                                </div>
-                            </div>
-                            <div className="arcade-dashboard-useraction">
-                                <button className="arcade-btn-block btn-dark" onClick={this.loginAction}>{this.props.guestMode?"Sign In":"Sign Out"}</button>
-                                {
-                                    this.props.guestMode ? (<button className="arcade-btn-block btn-light" onClick={this.newAccount}>Create Account</button>) : null
-                                }
-                            </div>
-                        </div>
-                        <div className="arcade-dashboard-friends arcade-dashboard-card">
-                            <h5>Friends</h5>
-                            <p>No Records</p>
+                            <Link to="/play" className="arcade-btn-lgNav">PLAY SINGLEPLAYER</Link>
                         </div>
                     </div>
                 </div>

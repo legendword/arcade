@@ -4,12 +4,12 @@ export class SignInForm extends Component {
 
     signIn = (e) => {
         e.preventDefault()
-        window.location.href = "http://legendword.com/login?from=http://legendword.com/arcade"
+        window.location.href = "https://legendword.com/login?from=http://legendword.com/arcade"
     }
 
     signUp = (e) => {
         e.preventDefault()
-        window.location.href = "http://legendword.com/register"
+        window.location.href = "https://legendword.com/register"
     }
 
     render() {
