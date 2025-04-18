@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Modal from '../components/Modal'
 import '../css/Game.Tetris.css'
+import _ from 'lodash'
 
 class CurrentShape {
     constructor(props) {
@@ -234,13 +235,16 @@ export class Tetris extends Component {
             ntl.push(ntt)
         }
 
+        const nextShapes = this.randomBlockSet()
+        const nextShape = new CurrentShape({shape:nextShapes.shift(),x:1,y:3,flip:0})
         this.state = {
             tiles: tl,
             score: 0,
             level: 1,
             currentSpeed: 800,
             speedConverted: 1.25,
-            nextShape: new CurrentShape({shape:this.randomBlock(),x:1,y:3,flip:0}),
+            nextShapes: nextShapes,
+            nextShape: nextShape,
             nextTiles: ntl,
             current: new CurrentShape({shape:null,x:null,y:null,flip:null}),
             modal: {
@@ -306,13 +310,16 @@ export class Tetris extends Component {
             this.props.highscoreUpdate({gameCode:this.props.gameCode, score:0})
         }
 
+        const nextShapes = this.randomBlockSet()
+        const nextShape = new CurrentShape({shape:nextShapes.shift(),x:1,y:3,flip:0})
         this.setState((st) => ({
             tiles: st.tiles.map((v) => (v.map(w => (w.resetReturn())))),
             score: 0,
             level: 1,
             currentSpeed: 800,
             speedConverted: 1.25,
-            nextShape: new CurrentShape({shape:this.randomBlock(),x:1,y:3,flip:0}),
+            nextShapes: nextShapes,
+            nextShape: nextShape,
             nextTiles: ntl,
             current: new CurrentShape({shape:null,x:null,y:null,flip:null}),
             paused: false,
@@ -622,15 +629,25 @@ export class Tetris extends Component {
         
         let ntls = this.state.nextTiles
         ns.remove({self:this,tls:ntls})
-        ns.shape = this.randomBlock()
+        let nextShapes = this.state.nextShapes
+        if (nextShapes.length <= 1) {
+            nextShapes = [...nextShapes, ...this.randomBlockSet()]
+        }
+        ns.shape = nextShapes.shift()
         ns.add({self:this,tls:ntls})
 
         this.setState({
             current: cs,
             tiles: tls,
+            nextShapes: nextShapes,
             nextShape: ns,
             nextTiles: ntls
         })
+    }
+
+    randomBlockSet = () => {
+        // shuffle blocks
+        return _.shuffle(this.blocks)
     }
 
     randomBlock = () => {

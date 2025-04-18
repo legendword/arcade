@@ -8,7 +8,12 @@ export class Changelog extends Component {
                 <h2>Changelog</h2>
                 <hr />
                 <div className="arcade-changelog-content">
-                    <Commit id="" ver="0.2.1" date="">
+                    <Commit id="" ver="0.2.2" date="">
+                        <ul>
+                            <li>Updated Tetris to use random sets of blocks, so every shape type will be encountered once before the next set.</li>
+                        </ul>
+                    </Commit>
+                    <Commit id="2e3e88d86b4281bb5270576800b30882aede57b4" ver="0.2.1" date="Jul. 23, 2020">
                         <ul>
                             <li style={{fontWeight: "bold"}}>Online, Friends, and Log In functionalities have been removed; only local singleplayer games are kept. To play online games, visit the new <a href="https://games.legendword.com/">Legendword Games</a> platform.</li>
                             <li>Massive changes has been made to the theme. Originally, the theme color is blue/light blue; these colors are too bright. Also, the old look includes too much white. The new theme has purple as the primary color and very light blue (almost white) as the secondary color.</li>
